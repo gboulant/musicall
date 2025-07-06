@@ -39,12 +39,6 @@ import (
 	"galuma.net/synthetic/wave"
 )
 
-func sinewave(f float64, a float64, d float64) []float64 {
-	w := wave.NewSineWave(f, a, wave.DefaultSampleRate)
-	s := w.Synthesize(d)
-	return s
-}
-
 //export WaveSize
 func WaveSize(d float64) int {
 	return int(d * float64(wave.DefaultSampleRate))
@@ -52,7 +46,21 @@ func WaveSize(d float64) int {
 
 //export SineWave
 func SineWave(f float64, a float64, d float64, outptr *float64) {
-	s := sinewave(f, a, d)
+	s := wave.SineWaveSignal(f, a, d)
+	out := unsafe.Slice(outptr, len(s))
+	copy(out, s)
+}
+
+//export SquareWave
+func SquareWave(f float64, a float64, d float64, outptr *float64) {
+	s := wave.SquareWaveSignal(f, a, d)
+	out := unsafe.Slice(outptr, len(s))
+	copy(out, s)
+}
+
+//export KarplusStrongWave
+func KarplusStrongWave(f float64, a float64, d float64, outptr *float64) {
+	s := wave.KarplusStrongWaveSignal(f, a, d)
 	out := unsafe.Slice(outptr, len(s))
 	copy(out, s)
 }
