@@ -40,12 +40,13 @@ func (s harmonicSynthesizer) Amplitude() float64 {
 }
 
 // -------------------------------------------------------------
-type SineWave struct {
+// sineWaveSynthesizer is a synthesizer for creating a sine wave
+type sineWaveSynthesizer struct {
 	harmonicSynthesizer
 }
 
 // Synthesize creates a sine wave signal
-func (s SineWave) Synthesize(duration float64) []float64 {
+func (s sineWaveSynthesizer) Synthesize(duration float64) []float64 {
 	size := int(duration * float64(s.sampleRate))
 	samples := make([]float64, size)
 	var angle float64 = math.Pi * 2 / float64(s.sampleRate)
@@ -56,8 +57,8 @@ func (s SineWave) Synthesize(duration float64) []float64 {
 	return samples
 }
 
-func NewSineWave(frequency float64, amplitude float64, sampleRate int) HarmonicSynthesizer {
-	return SineWave{
+func NewSineWaveSynthesizer(frequency float64, amplitude float64, sampleRate int) HarmonicSynthesizer {
+	return sineWaveSynthesizer{
 		harmonicSynthesizer{
 			sampleRate: sampleRate,
 			frequency:  frequency,
@@ -65,12 +66,13 @@ func NewSineWave(frequency float64, amplitude float64, sampleRate int) HarmonicS
 }
 
 // -------------------------------------------------------------
-type SquareWave struct {
+// squareWaveSynthesizer is a synthesizer for creating a square wave
+type squareWaveSynthesizer struct {
 	harmonicSynthesizer
 }
 
 // Synthesize creates a square wave signal
-func (s SquareWave) Synthesize(duration float64) []float64 {
+func (s squareWaveSynthesizer) Synthesize(duration float64) []float64 {
 	size := int(duration * float64(s.sampleRate))
 	samples := make([]float64, size)
 
@@ -89,8 +91,8 @@ func (s SquareWave) Synthesize(duration float64) []float64 {
 
 }
 
-func NewSquareWave(frequency float64, amplitude float64, sampleRate int) HarmonicSynthesizer {
-	return SquareWave{
+func NewSquareWaveSynthesizer(frequency float64, amplitude float64, sampleRate int) HarmonicSynthesizer {
+	return squareWaveSynthesizer{
 		harmonicSynthesizer{
 			sampleRate: sampleRate,
 			frequency:  frequency,
@@ -98,11 +100,12 @@ func NewSquareWave(frequency float64, amplitude float64, sampleRate int) Harmoni
 }
 
 // -------------------------------------------------------------
-type KarplusStrongWave struct {
+// karplusStrongSynthesizer is a synthesizer for creating a square wave
+type karplusStrongSynthesizer struct {
 	harmonicSynthesizer
 }
 
-func (s KarplusStrongWave) Synthesize(duration float64) []float64 {
+func (s karplusStrongSynthesizer) Synthesize(duration float64) []float64 {
 	noise := make([]float64, int(float64(s.sampleRate)/s.frequency))
 	for i := range noise {
 		noise[i] = rand.Float64()*2 - 1
@@ -121,8 +124,8 @@ func (s KarplusStrongWave) Synthesize(duration float64) []float64 {
 	return samples
 }
 
-func NewKarplusStrongWave(frequency float64, amplitude float64, sampleRate int) HarmonicSynthesizer {
-	return KarplusStrongWave{
+func NewKarplusStrongSynthesizer(frequency float64, amplitude float64, sampleRate int) HarmonicSynthesizer {
+	return karplusStrongSynthesizer{
 		harmonicSynthesizer{
 			sampleRate: sampleRate,
 			frequency:  frequency,

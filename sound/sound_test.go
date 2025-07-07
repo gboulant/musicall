@@ -28,15 +28,15 @@ func TestNewSound(t *testing.T) {
 	a := 1.
 
 	sinesound := func(f float64, d float64) beep.Streamer {
-		synthesizer := wave.NewSineWave(f, a, int(sampleRate))
+		synthesizer := wave.NewSineWaveSynthesizer(f, a, int(sampleRate))
 		return NewSound(d, synthesizer)
 	}
 	squaresound := func(f float64, d float64) beep.Streamer {
-		synthesizer := wave.NewSquareWave(f, a, int(sampleRate))
+		synthesizer := wave.NewSquareWaveSynthesizer(f, a, int(sampleRate))
 		return NewSound(d, synthesizer)
 	}
 	guitarsound := func(f float64, d float64) beep.Streamer {
-		synthesizer := wave.NewKarplusStrongWave(f, a, int(sampleRate))
+		synthesizer := wave.NewKarplusStrongSynthesizer(f, a, int(sampleRate))
 		return NewSound(d, synthesizer)
 	}
 
@@ -67,7 +67,7 @@ func TestSoundStruct(t *testing.T) {
 	sound1 := &Sound{signal, 0}
 	signal = wave.SquareWaveSignal(f, a, d)
 	sound2 := &Sound{signal, 0}
-	signal = wave.KarplusStrongWaveSignal(f, a, d)
+	signal = wave.KarplusStrongSignal(f, a, d)
 	sound3 := &Sound{signal, 0}
 
 	streamers := []beep.Streamer{

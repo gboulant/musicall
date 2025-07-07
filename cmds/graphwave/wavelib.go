@@ -60,7 +60,7 @@ func SquareWave(f float64, a float64, d float64, outptr *float64) {
 
 //export KarplusStrongWave
 func KarplusStrongWave(f float64, a float64, d float64, outptr *float64) {
-	s := wave.KarplusStrongWaveSignal(f, a, d)
+	s := wave.KarplusStrongSignal(f, a, d)
 	out := unsafe.Slice(outptr, len(s))
 	copy(out, s)
 }

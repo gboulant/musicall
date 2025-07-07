@@ -7,7 +7,7 @@ import (
 func TestNewSineWave(t *testing.T) {
 	f := 440. // Hz
 	a := 10.
-	w := NewSineWave(f, a, DefaultSampleRate)
+	w := NewSineWaveSynthesizer(f, a, DefaultSampleRate)
 
 	d := 2.0 // seconds
 	s := w.Synthesize(d)

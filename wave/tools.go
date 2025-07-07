@@ -1,19 +1,19 @@
 package wave
 
 func SineWaveSignal(f float64, a float64, d float64) []float64 {
-	w := NewSineWave(f, a, DefaultSampleRate)
+	w := NewSineWaveSynthesizer(f, a, DefaultSampleRate)
 	s := w.Synthesize(d)
 	return s
 }
 
 func SquareWaveSignal(f float64, a float64, d float64) []float64 {
-	w := NewSquareWave(f, a, DefaultSampleRate)
+	w := NewSquareWaveSynthesizer(f, a, DefaultSampleRate)
 	s := w.Synthesize(d)
 	return s
 }
 
-func KarplusStrongWaveSignal(f float64, a float64, d float64) []float64 {
-	w := NewKarplusStrongWave(f, a, DefaultSampleRate)
+func KarplusStrongSignal(f float64, a float64, d float64) []float64 {
+	w := NewKarplusStrongSynthesizer(f, a, DefaultSampleRate)
 	s := w.Synthesize(d)
 	return s
 }

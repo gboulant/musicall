@@ -1,13 +1,13 @@
 all: build
 
-build: wave.so
+build: wavelib.so
 
-wave.so: wave.go
+wavelib.so: wavelib.go
 	go build -o $@ -buildmode=c-shared $<
 
 test: build
-	@python3 waveplot.py
+	@python3 tester.py
 
 clean:
-	@rm -f wave.so wave.h
+	@rm -f wavelib.so wavelib.h
 	@rm -rf __pycache__
