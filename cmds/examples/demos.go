@@ -19,7 +19,7 @@ func init() {
 	}
 }
 
-func d01_dissonance() error {
+var d01_dissonance *Program = NewProgram("D01", "test de fréquences dissonantes", func() error {
 
 	sinesound := func(f float64, a float64, d float64) beep.Streamer {
 		synthesizer := wave.NewSineWaveSynthesizer(f, a, int(sampleRate))
@@ -53,4 +53,4 @@ func d01_dissonance() error {
 	}
 
 	return nil
-}
+})

@@ -6,10 +6,6 @@ import (
 	"os"
 )
 
-func init() {
-	AddProgram("D01", d01_dissonance, "test de fréquences dissonantes")
-}
-
 const defaultProgName string = "D01"
 
 func main() {

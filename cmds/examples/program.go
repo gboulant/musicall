@@ -4,6 +4,9 @@ import (
 	"fmt"
 )
 
+// Program defines a data structure to describe a demonstration use case and
+// then execute this use case. Set the Execute attribute to the function to
+// execute.
 type Program struct {
 	Name    string
 	Execute func() error
@@ -16,15 +19,19 @@ func (u Program) String() string {
 
 var programs []Program
 
-func AddProgram(name string, execute func() error, comment string) {
-	programs = append(programs, Program{name, execute, comment})
+// NewProgram creates a new Program and registers the created program into the
+// catalog of program (like AddPrograme)
+func NewProgram(name string, comment string, function func() error) *Program {
+	p := Program{name, function, comment}
+	programs = append(programs, p)
+	return &p
 }
 
-func GetProgram(name string) (Program, error) {
+func GetProgram(name string) (*Program, error) {
 	for _, program := range programs {
 		if program.Name == name {
-			return program, nil
+			return &program, nil
 		}
 	}
-	return Program{}, fmt.Errorf("no program with name %s", name)
+	return nil, fmt.Errorf("no program with name %s", name)
 }
