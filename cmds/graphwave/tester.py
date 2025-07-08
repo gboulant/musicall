@@ -33,7 +33,7 @@ def test03_karplusStrongWave():
     plottimeseries(t,s)
 
 def test04_dissonance():
-    d = 8.
+    d = 4.
     s1 = waveclt.SineWave(f,a,d)
     s2 = waveclt.SineWave(3.*f/2.,a,d)
     s3 = waveclt.SineWave(3.1*f/2.,a,d)
@@ -45,8 +45,19 @@ def test04_dissonance():
     a13 = np.add(s1,s3)
     plottimeseries(t,a13)
 
+def test05_vibrato():
+    d = 4.
+    deltaf = 6.
+    s1 = waveclt.SineWave(f,a,d)
+    s2 = waveclt.SineWave(f+deltaf,0.2*a,d)
+    t = [i/waveclt.samplerate for i in range(len(s1))]
+
+    a12 = np.add(s1,s2)
+    plottimeseries(t,a12)
+
 if __name__ == "__main__":
     #test01_sinewave()
     #test02_squarewave()
     #test03_karplusStrongWave()
-    test04_dissonance()
+    #test04_dissonance()
+    test05_vibrato()

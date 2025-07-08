@@ -20,7 +20,8 @@ func (u Program) String() string {
 var programs []Program
 
 // NewProgram creates a new Program and registers the created program into the
-// catalog of program (like AddPrograme)
+// catalog of programs. After this registration, the program can be
+// obtain by name using the function GetProgram
 func NewProgram(name string, comment string, function func() error) *Program {
 	p := Program{name, function, comment}
 	programs = append(programs, p)
