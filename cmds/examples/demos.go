@@ -22,7 +22,7 @@ func init() {
 
 func sinesound(f float64, a float64, d float64) beep.Streamer {
 	synthesizer := wave.NewSineWaveSynthesizer(f, a, int(sampleRate))
-	return sound.NewSound(d, synthesizer)
+	return sound.SynthSound(d, synthesizer)
 }
 func silence(duration float64) beep.Streamer {
 	return generators.Silence(int(duration * float64(sampleRate)))

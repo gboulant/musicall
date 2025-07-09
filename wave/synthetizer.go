@@ -108,7 +108,7 @@ type karplusStrongSynthesizer struct {
 func (s karplusStrongSynthesizer) Synthesize(duration float64) []float64 {
 	noise := make([]float64, int(float64(s.sampleRate)/s.frequency))
 	for i := range noise {
-		noise[i] = rand.Float64()*2 - 1
+		noise[i] = s.amplitude*rand.Float64()*2 - 1
 	}
 	// the buffer noise has a duration equal to the period of the signal
 	// (1/f). And then we repeatedly copy this buffer for any period that
@@ -130,4 +130,34 @@ func NewKarplusStrongSynthesizer(frequency float64, amplitude float64, sampleRat
 			sampleRate: sampleRate,
 			frequency:  frequency,
 			amplitude:  amplitude}}
+}
+
+// -------------------------------------------------------------
+type sweepFrequencySynthesizer struct {
+	harmonicSynthesizer
+	frequencyStart float64
+	frequencyEnd   float64
+}
+
+func (s sweepFrequencySynthesizer) Synthesize(duration float64) []float64 {
+	size := int(duration * float64(s.sampleRate))
+	samples := make([]float64, size)
+	var angle float64 = math.Pi * 2 / float64(s.sampleRate)
+
+	deltafreq := (s.frequencyEnd - s.frequencyStart) / float64(size)
+	for i := range samples {
+		s.frequency = s.frequencyStart + deltafreq*float64(i)
+		samples[i] = s.amplitude * math.Sin(angle*s.frequency*float64(i))
+	}
+	return samples
+}
+
+func NewSweepFrequencySynthesizer(frequencyStart, frequencyEnd float64, amplitude float64, sampleRate int) HarmonicSynthesizer {
+	return sweepFrequencySynthesizer{
+		harmonicSynthesizer{
+			sampleRate: sampleRate,
+			amplitude:  amplitude},
+		frequencyStart,
+		frequencyEnd,
+	}
 }

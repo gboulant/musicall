@@ -18,3 +18,13 @@ func TestNewSineWave(t *testing.T) {
 		t.Errorf("len is %d (should be %d)", reslen, explen)
 	}
 }
+
+func TestNewSweepFrequencySynthesizer(t *testing.T) {
+	f0 := 440. // Hz
+	f1 := 550.
+	a := 10.
+	w := NewSweepFrequencySynthesizer(f0, f1, a, DefaultSampleRate)
+
+	d := 2.0 // seconds
+	w.Synthesize(d)
+}

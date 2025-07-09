@@ -29,15 +29,15 @@ func TestNewSound(t *testing.T) {
 
 	sinesound := func(f float64, d float64) beep.Streamer {
 		synthesizer := wave.NewSineWaveSynthesizer(f, a, int(sampleRate))
-		return NewSound(d, synthesizer)
+		return SynthSound(d, synthesizer)
 	}
 	squaresound := func(f float64, d float64) beep.Streamer {
 		synthesizer := wave.NewSquareWaveSynthesizer(f, a, int(sampleRate))
-		return NewSound(d, synthesizer)
+		return SynthSound(d, synthesizer)
 	}
 	guitarsound := func(f float64, d float64) beep.Streamer {
 		synthesizer := wave.NewKarplusStrongSynthesizer(f, a, int(sampleRate))
-		return NewSound(d, synthesizer)
+		return SynthSound(d, synthesizer)
 	}
 
 	f := 440.
@@ -63,12 +63,9 @@ func TestSoundStruct(t *testing.T) {
 	a := 1.
 	d := 1.
 
-	signal := wave.SineWaveSignal(f, a, d)
-	sound1 := &Sound{signal, 0}
-	signal = wave.SquareWaveSignal(f, a, d)
-	sound2 := &Sound{signal, 0}
-	signal = wave.KarplusStrongSignal(f, a, d)
-	sound3 := &Sound{signal, 0}
+	sound1 := NewSound(wave.SineWaveSignal(f, a, d))
+	sound2 := NewSound(wave.SquareWaveSignal(f, a, d))
+	sound3 := NewSound(wave.KarplusStrongSignal(f, a, d))
 
 	streamers := []beep.Streamer{
 		silence(0.2), sound1,
@@ -80,5 +77,44 @@ func TestSoundStruct(t *testing.T) {
 	if err := Play(streamer); err != nil {
 		t.Error(err)
 	}
+}
+
+func TestSoundWithNoise(t *testing.T) {
+	f := 440.
+	a := 1.
+	d := 2.
+
+	signal0 := wave.SineWaveSignal(f, a, d)
+	signal1 := make([]float64, len(signal0))
+	copy(signal1, signal0)
+	wave.AddNoise(&signal1, 0.2*a)
+
+	streamers := []beep.Streamer{
+		silence(0.2), NewSound(signal0),
+		silence(0.2), NewSound(signal1),
+	}
+
+	streamer := beep.Seq(streamers...)
+	if err := Play(streamer); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestSweepFrequency(t *testing.T) {
+	f0 := 60. // Hz
+	f1 := 280.
+	a := 5.
+	d := 2.0 // seconds
+
+	var w wave.Synthesizer
+	var s []float64
+
+	w = wave.NewSweepFrequencySynthesizer(f1, f0, a, int(sampleRate))
+	s = w.Synthesize(d)
+	Play(NewSound(s))
+
+	w = wave.NewSweepFrequencySynthesizer(f0, f1, a, int(sampleRate))
+	s = w.Synthesize(d)
+	Play(NewSound(s))
 
 }
