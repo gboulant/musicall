@@ -1,8 +1,16 @@
 package main
 
+/*
+We illustrate in this program how to use the external package go-echarts to plot
+the timeseries of a signal generated using the wave package.
+*/
+
 import (
+	"fmt"
+	"io"
 	"log"
 	"net/http"
+	"os"
 
 	"galuma.net/synthetic/wave"
 	"github.com/go-echarts/go-echarts/v2/charts"
@@ -30,9 +38,8 @@ func wavedata(samples []float64, samplerate int) (xdata []float64, ydata []opts.
 	return xdata, ydata
 }
 
-func httpserver(w http.ResponseWriter, _ *http.Request) {
+func plotdata(w io.Writer, samples []float64, samplerate int) error {
 	// Prepare the data
-	samples, samplerate := testsamples()
 	xdata, ydata := wavedata(samples, samplerate)
 
 	// create a new line instance
@@ -73,15 +80,53 @@ func httpserver(w http.ResponseWriter, _ *http.Request) {
 
 	//smooth := true
 	//line.SetSeriesOptions(charts.WithLineChartOpts(opts.LineChart{Smooth: &smooth}))
-	line.Render(w)
+	return line.Render(w)
 }
 
-func test_server() error {
+// ----------------------------------------------------------------
+// Plot the data using a standalone configuration (create a local html file)
+func standalone() error {
+	// Prepare the data
+	samples, samplerate := testsamples()
+	// Create the plot with rendering onto an html local file
+
+	// Create the plot with rendering into a local html file
+	outfilepath := "output.wavechart.html"
+	f, _ := os.Create(outfilepath)
+	defer f.Close()
+
+	if err := plotdata(f, samples, samplerate); err != nil {
+		return err
+	}
+	log.Printf("Result available in file %s", outfilepath)
+	return nil
+}
+
+// ----------------------------------------------------------------
+// Plot the data using a server configuration (plot into the http writer)
+func httpserver(w http.ResponseWriter, _ *http.Request) {
+	// Prepare the data
+	samples, samplerate := testsamples()
+
+	// Create the plot with rendering into the http writer
+	plotdata(w, samples, samplerate)
+}
+
+func server() error {
 	http.HandleFunc("/", httpserver)
 	log.Println("Plot server is running on http://localhost:8081")
 	return http.ListenAndServe(":8081", nil)
 }
 
+// ----------------------------------------------------------------
 func main() {
-	test_server()
+	var program func() error
+
+	program = server
+	program = standalone // comment this line for activating the server mode
+
+	if err := program(); err != nil {
+		fmt.Fprintf(os.Stderr, "error: %s\n", err)
+		os.Exit(1)
+	}
 }
