@@ -100,7 +100,7 @@ func TestSoundWithNoise(t *testing.T) {
 	}
 }
 
-func TestSweepFrequency(t *testing.T) {
+func TestSweepFrequency01(t *testing.T) {
 	f0 := 60. // Hz
 	f1 := 280.
 	a := 5.
@@ -109,12 +109,39 @@ func TestSweepFrequency(t *testing.T) {
 	var w wave.Synthesizer
 	var s []float64
 
-	w = wave.NewSweepFrequencySynthesizer(f1, f0, a, int(sampleRate))
-	s = w.Synthesize(d)
-	Play(NewSound(s))
-
 	w = wave.NewSweepFrequencySynthesizer(f0, f1, a, int(sampleRate))
 	s = w.Synthesize(d)
 	Play(NewSound(s))
 
+	wave.Reverse(&s)
+	Play(NewSound(s))
+}
+
+func TestSweepFrequency02(t *testing.T) {
+	// Exemple 2, using streamers
+
+	f0 := 60. // Hz
+	f1 := 280.
+	a := 0.5
+	d := 2. // seconds
+
+	var w wave.Synthesizer
+	var s []float64
+
+	w = wave.NewSweepFrequencySynthesizer(f0, f1, a, int(sampleRate))
+
+	var streamers []beep.Streamer
+	streamers = append(streamers, silence(0.4))
+
+	s = w.Synthesize(d)
+	streamers = append(streamers, NewSound(s))
+
+	s = w.Synthesize(d)
+	wave.Reverse(&s)
+	streamers = append(streamers, NewSound(s))
+
+	streamer := beep.Seq(streamers...)
+	if err := Play(streamer); err != nil {
+		t.Error(err)
+	}
 }

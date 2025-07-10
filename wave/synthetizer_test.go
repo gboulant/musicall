@@ -12,7 +12,7 @@ func TestNewSineWave(t *testing.T) {
 	d := 2.0 // seconds
 	s := w.Synthesize(d)
 
-	explen := int(d * float64(DefaultSampleRate))
+	explen := int(d * float64(w.SampleRate()))
 	reslen := len(s)
 	if reslen != explen {
 		t.Errorf("len is %d (should be %d)", reslen, explen)
@@ -26,5 +26,12 @@ func TestNewSweepFrequencySynthesizer(t *testing.T) {
 	w := NewSweepFrequencySynthesizer(f0, f1, a, DefaultSampleRate)
 
 	d := 2.0 // seconds
-	w.Synthesize(d)
+	s := w.Synthesize(d)
+	r := w.SampleRate()
+	explen := int(d * float64(r))
+	reslen := len(s)
+	if reslen != explen {
+		t.Errorf("len is %d (should be %d)", reslen, explen)
+	}
+
 }

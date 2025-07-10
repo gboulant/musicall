@@ -135,8 +135,8 @@ func NewKarplusStrongSynthesizer(frequency float64, amplitude float64, sampleRat
 // -------------------------------------------------------------
 type sweepFrequencySynthesizer struct {
 	harmonicSynthesizer
-	frequencyStart float64
-	frequencyEnd   float64
+	frequencyMin float64
+	frequencyMax float64
 }
 
 func (s sweepFrequencySynthesizer) Synthesize(duration float64) []float64 {
@@ -144,20 +144,21 @@ func (s sweepFrequencySynthesizer) Synthesize(duration float64) []float64 {
 	samples := make([]float64, size)
 	var angle float64 = math.Pi * 2 / float64(s.sampleRate)
 
-	deltafreq := (s.frequencyEnd - s.frequencyStart) / float64(size)
+	deltafreq := (s.frequencyMax - s.frequencyMin) / float64(size)
+	var frequency float64
 	for i := range samples {
-		s.frequency = s.frequencyStart + deltafreq*float64(i)
-		samples[i] = s.amplitude * math.Sin(angle*s.frequency*float64(i))
+		frequency = s.frequencyMin + deltafreq*float64(i)
+		samples[i] = s.amplitude * math.Sin(angle*frequency*float64(i))
 	}
 	return samples
 }
 
-func NewSweepFrequencySynthesizer(frequencyStart, frequencyEnd float64, amplitude float64, sampleRate int) HarmonicSynthesizer {
+func NewSweepFrequencySynthesizer(frequencyMin, frequencyMax float64, amplitude float64, sampleRate int) HarmonicSynthesizer {
 	return sweepFrequencySynthesizer{
 		harmonicSynthesizer{
 			sampleRate: sampleRate,
 			amplitude:  amplitude},
-		frequencyStart,
-		frequencyEnd,
+		frequencyMin,
+		frequencyMax,
 	}
 }
