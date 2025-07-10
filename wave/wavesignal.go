@@ -1,5 +1,8 @@
 package wave
 
+// TODO, the signal function should return their samplerate, or let the
+// possibility to choose it?
+
 func SineWaveSignal(f float64, a float64, d float64) []float64 {
 	w := NewSineWaveSynthesizer(f, a, DefaultSampleRate)
 	s := w.Synthesize(d)

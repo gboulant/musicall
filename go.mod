@@ -2,7 +2,10 @@ module galuma.net/synthetic
 
 go 1.24.3
 
-require github.com/gopxl/beep v1.4.1
+require (
+	github.com/go-echarts/go-echarts/v2 v2.6.0
+	github.com/gopxl/beep v1.4.1
+)
 
 require (
 	github.com/ebitengine/oto/v3 v3.1.0 // indirect
