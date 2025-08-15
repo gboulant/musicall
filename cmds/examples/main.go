@@ -11,7 +11,9 @@ const defaultExampleName string = "D01"
 func init() {
 	NewExample("D01", "son de quintes", DEMO01_quintes)
 	NewExample("D02", "vibrato", DEMO02_vibrato)
-	NewExample("D03", "vibrato", DEMO03_constant)
+	NewExample("D03", "modulation d'amplitude", DEMO03_amplitude_modulation)
+	NewExample("D04", "modulation de fréquence", DEMO04_frequency_modulation)
+
 }
 
 func main() {

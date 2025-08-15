@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"math"
 	"time"
 
 	"galuma.net/synthetic/sound"
@@ -14,6 +15,10 @@ import (
 const sampleRate = beep.SampleRate(wave.DefaultSampleRate)
 
 func init() {
+	// Le speaker est initialisé avec un sample rate donnée. Tous les
+	// signaux ([]float64) joués par ce speaker seront considérés comme
+	// des sons avec ce sample rate. On doit donc générer des signaux
+	// avec ce sample rate.
 	err := speaker.Init(sampleRate, sampleRate.N(time.Second/10))
 	if err != nil {
 		log.Fatal(err)
@@ -108,18 +113,82 @@ func DEMO02_vibrato() error {
 }
 
 // ----------------------------------------------------------------
-func DEMO03_constant() error {
-	f := 180.
-	a := 0.1
-	d := 3.
+func DEMO03_amplitude_modulation() error {
 
-	signal1 := wave.NewSineWaveSynthesizer(f, a, int(sampleRate)).Synthesize(d)
-	signal2 := make([]float64, len(signal1))
-	for i := range signal2 {
-		signal2[i] = 3.0 + signal1[i]
+	desimate := true
+
+	f := 440.
+	a := 1.
+	d := 3.
+	r := int(sampleRate)
+
+	if desimate {
+		f = f / 10.
+		r = int(sampleRate / 100)
 	}
 
-	if err := sound.Play(sound.NewSound(signal2)); err != nil {
+	mf := f * 0.1 // fréquence de la modulation d'amplitude
+	ma := a * 0.2 // amplitude de la modulation d'amplitude
+
+	size := int(d * float64(r))
+	samples := make([]float64, size)
+	var angle float64 = math.Pi * 2 / float64(r)
+
+	for i := range samples {
+		phase := angle * f * float64(i)
+		amplitude := a + ma*math.Sin(angle*mf*float64(i))
+		samples[i] = amplitude * math.Sin(phase)
+	}
+
+	wave.PlotToFile("output.DEMO03_amplitude_modulation.html", samples, r)
+
+	if desimate {
+		// Do not play the sound, the sample rate is not consistent with
+		// the speaker
+		return nil
+	}
+
+	if err := sound.Play(sound.NewSound(samples)); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ----------------------------------------------------------------
+func DEMO04_frequency_modulation() error {
+	desimate := false
+
+	f := 440.
+	a := 1.
+	d := 4.
+	r := int(sampleRate)
+
+	if desimate {
+		r = int(sampleRate / 100)
+	}
+
+	mf := f * 0.1 // fréquence de la modulation de frequence
+	ma := f * 0.1 // amplitude de la modulation de fréquence
+
+	size := int(d * float64(r))
+	samples := make([]float64, size)
+	var angle float64 = math.Pi * 2 / float64(r)
+
+	for i := range samples {
+		frequency := f + ma*math.Sin(angle*mf*float64(i))
+		phase := angle * frequency * float64(i)
+		samples[i] = a * math.Sin(phase)
+	}
+
+	wave.PlotToFile("output.DEMO04_frequency_modulation.html", samples, int(r))
+
+	if desimate {
+		// Do not play the sound, the sample rate is not consistent with
+		// the speaker
+		return nil
+	}
+	if err := sound.Play(sound.NewSound(samples)); err != nil {
 		return err
 	}
 
