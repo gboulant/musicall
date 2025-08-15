@@ -7,6 +7,17 @@ import (
 
 const DefaultSampleRate int = 44100
 
+// SampleRate returns a validated sample rate (number of samples per
+// second). If the input value is zero or negative, then it returns the
+// default sample rate value DefaultSampleRate=44100, otherwize it
+// returns the input value itself.
+func SampleRate(rate int) int {
+	if rate <= 0 {
+		return DefaultSampleRate
+	}
+	return rate
+}
+
 // Synthetizer is an interface for functions that create a signal at a
 // given samplerate for a given duration
 type Synthesizer interface {

@@ -4,6 +4,7 @@ build:
 	@go build
 
 test: build
+	@./wavechart
 
 clean:
 	@go clean

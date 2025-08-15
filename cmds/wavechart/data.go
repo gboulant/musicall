@@ -4,28 +4,17 @@ import (
 	"galuma.net/synthetic/wave"
 )
 
-func d01_KarplusStrong() (samples []float64, samplerate int) {
+func d01_KarplusStrong(samplerate int) []float64 {
 	f := 5.
 	a := 2.
 	d := 4.
-	samples = wave.KarplusStrongSignal(f, a, d)
-	samplerate = wave.DefaultSampleRate
-	return samples, samplerate
+	return wave.KarplusStrongSignal(f, a, d, samplerate)
 }
 
-func d02_sweepfrequency(reverse bool) (samples []float64, samplerate int) {
+func d02_sweepfrequency(samplerate int, reverse bool) []float64 {
 	a := 2.
 	d := 10.   // sec.
 	fmin := 1. // Hz
 	fmax := 5. // Hz
-
-	w := wave.NewSweepFrequencySynthesizer(fmin, fmax, a, int(wave.DefaultSampleRate))
-	samples = w.Synthesize(d)
-	samplerate = w.SampleRate()
-
-	// Uncomment to reverse the signal (sweep from max to min)
-	if reverse {
-		wave.Reverse(&samples)
-	}
-	return samples, samplerate
+	return wave.SweepFrequencySignal(fmin, fmax, a, d, samplerate, reverse)
 }

@@ -6,30 +6,34 @@ import (
 	"os"
 )
 
-const defaultProgName string = "D01"
+const defaultExampleName string = "D01"
+
+func init() {
+	NewExample("D01", "son de quintes", DEMO01_quintes)
+	NewExample("D02", "vibrato", DEMO02_vibrato)
+	NewExample("D03", "vibrato", DEMO03_constant)
+}
 
 func main() {
-	var listPrograms bool
-	var programName string
-	flag.BoolVar(&listPrograms, "l", false, "list of demo examples")
-	flag.StringVar(&programName, "n", defaultProgName, "name of the demo to execute")
+	var listExamples bool
+	var exampleName string
+	flag.BoolVar(&listExamples, "l", false, "list of demo examples")
+	flag.StringVar(&exampleName, "n", defaultExampleName, "name of the demo example to execute")
 	flag.Parse()
 
-	if listPrograms {
-		for _, program := range programs {
-			fmt.Println(program)
-		}
+	if listExamples {
+		ListExamples()
 		os.Exit(0)
 	}
 
-	program, err := GetProgram(programName)
+	example, err := GetExample(exampleName)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %s\n", err)
 		os.Exit(1)
 	}
 
-	fmt.Printf("Executing demo %s ...\n", program.Name)
-	if err := program.Execute(); err != nil {
+	fmt.Printf("Executing demo %s ...\n", example.Name)
+	if err := example.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "error: %s\n", err)
 		os.Exit(1)
 	}

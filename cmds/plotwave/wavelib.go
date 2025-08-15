@@ -39,28 +39,30 @@ import (
 	"galuma.net/synthetic/wave"
 )
 
+const samplerate = wave.DefaultSampleRate
+
 //export WaveSize
 func WaveSize(d float64) int {
-	return int(d * float64(wave.DefaultSampleRate))
+	return int(d * float64(samplerate))
 }
 
 //export SineWave
 func SineWave(f float64, a float64, d float64, outptr *float64) {
-	s := wave.SineWaveSignal(f, a, d)
+	s := wave.SineWaveSignal(f, a, d, samplerate)
 	out := unsafe.Slice(outptr, len(s))
 	copy(out, s)
 }
 
 //export SquareWave
 func SquareWave(f float64, a float64, d float64, outptr *float64) {
-	s := wave.SquareWaveSignal(f, a, d)
+	s := wave.SquareWaveSignal(f, a, d, samplerate)
 	out := unsafe.Slice(outptr, len(s))
 	copy(out, s)
 }
 
 //export KarplusStrongWave
 func KarplusStrongWave(f float64, a float64, d float64, outptr *float64) {
-	s := wave.KarplusStrongSignal(f, a, d)
+	s := wave.KarplusStrongSignal(f, a, d, samplerate)
 	out := unsafe.Slice(outptr, len(s))
 	copy(out, s)
 }

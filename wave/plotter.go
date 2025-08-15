@@ -1,4 +1,4 @@
-package main
+package wave
 
 import (
 	"io"
@@ -21,8 +21,7 @@ func data(samples []float64, samplerate int) (xdata []float64, ydata []opts.Line
 	return xdata, ydata
 }
 
-// line plots the samples series with rendering into the specified
-// writer. The writer could be an html file writer or an http writer.
+// line creates a echart line from the specified echart timeseries
 func line(xdata []float64, ydata []opts.LineData) *charts.Line {
 
 	// create a new line instance
@@ -66,17 +65,21 @@ func line(xdata []float64, ydata []opts.LineData) *charts.Line {
 	return line
 }
 
-func plot(w io.Writer, samples []float64, samplerate int) error {
+// Plot draws the samples series into the specified writer. The writer
+// could be an html file writer or an http writer
+func Plot(w io.Writer, samples []float64, samplerate int) error {
 	xdata, ydata := data(samples, samplerate)
 	chart := line(xdata, ydata)
 	return chart.Render(w)
 }
 
-func plotToFile(htmlpath string, samples []float64, samplerate int) error {
+// PlotToFile execute the Plot function with a writer opened on the
+// specified output file
+func PlotToFile(htmlpath string, samples []float64, samplerate int) error {
 	f, _ := os.Create(htmlpath)
 	defer f.Close()
 
-	if err := plot(f, samples, samplerate); err != nil {
+	if err := Plot(f, samples, samplerate); err != nil {
 		return err
 	}
 	log.Printf("Result available in file %s", htmlpath)

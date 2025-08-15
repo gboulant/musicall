@@ -8,12 +8,14 @@ the timeseries of a signal generated using the wave package.
 import (
 	"fmt"
 	"os"
+
+	"galuma.net/synthetic/wave"
 )
 
 // Plot the data using a standalone configuration (create a local html file)
 func fileplot(samples []float64, samplerate int) error {
 	outfilepath := "output.wavechart.html"
-	return plotToFile(outfilepath, samples, samplerate)
+	return wave.PlotToFile(outfilepath, samples, samplerate)
 }
 
 // ----------------------------------------------------------------
@@ -24,8 +26,9 @@ func main() {
 	//program = httpplot
 	program = fileplot
 
-	//samples, samplerate := d01_KarplusStrong()
-	samples, samplerate := d02_sweepfrequency(false)
+	samplerate := 440
+	//samples, samplerate := d01_KarplusStrong(samplerate)
+	samples := d02_sweepfrequency(samplerate, false)
 
 	if err := program(samples, samplerate); err != nil {
 		fmt.Fprintf(os.Stderr, "error: %s\n", err)

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"galuma.net/synthetic/wave"
 )
 
 type dataset struct {
@@ -23,7 +25,7 @@ func httpserver(w http.ResponseWriter, _ *http.Request) {
 	samplerate := payload.samplerate
 
 	// Create the plot with rendering into the http writer
-	if err := plot(w, samples, samplerate); err != nil {
+	if err := wave.Plot(w, samples, samplerate); err != nil {
 		fmt.Fprintln(w, err)
 	}
 }

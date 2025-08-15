@@ -63,9 +63,9 @@ func TestSoundStruct(t *testing.T) {
 	a := 1.
 	d := 1.
 
-	sound1 := NewSound(wave.SineWaveSignal(f, a, d))
-	sound2 := NewSound(wave.SquareWaveSignal(f, a, d))
-	sound3 := NewSound(wave.KarplusStrongSignal(f, a, d))
+	sound1 := NewSound(wave.SineWaveSignal(f, a, d, 0))
+	sound2 := NewSound(wave.SquareWaveSignal(f, a, d, 0))
+	sound3 := NewSound(wave.KarplusStrongSignal(f, a, d, 0))
 
 	streamers := []beep.Streamer{
 		silence(0.2), sound1,
@@ -84,7 +84,7 @@ func TestSoundWithNoise(t *testing.T) {
 	a := 1.
 	d := 2.
 
-	signal0 := wave.SineWaveSignal(f, a, d)
+	signal0 := wave.SineWaveSignal(f, a, d, 0)
 	signal1 := make([]float64, len(signal0))
 	copy(signal1, signal0)
 	wave.AddNoise(&signal1, 0.2*a)

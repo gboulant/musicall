@@ -29,7 +29,7 @@ func silence(duration float64) beep.Streamer {
 }
 
 // ----------------------------------------------------------------
-var _ *Program = NewProgram("D01", "son de quintes", func() error {
+func DEMO01_quintes() error {
 
 	f := 440.
 	a := 0.4
@@ -66,10 +66,10 @@ var _ *Program = NewProgram("D01", "son de quintes", func() error {
 	}
 
 	return nil
-})
+}
 
 // ----------------------------------------------------------------
-var _ *Program = NewProgram("D02", "vibrato", func() error {
+func DEMO02_vibrato() error {
 	f := 80.
 	a := 2.
 	d := 3.
@@ -98,11 +98,30 @@ var _ *Program = NewProgram("D02", "vibrato", func() error {
 	}
 	streamer = beep.Seq(
 		silence(0.5),
-		&sound.Sound{TotalSamples: vibrato, Processed: 0},
+		sound.NewSound(vibrato),
 	)
 	if err := sound.Play(streamer); err != nil {
 		return err
 	}
 
 	return nil
-})
+}
+
+// ----------------------------------------------------------------
+func DEMO03_constant() error {
+	f := 180.
+	a := 0.1
+	d := 3.
+
+	signal1 := wave.NewSineWaveSynthesizer(f, a, int(sampleRate)).Synthesize(d)
+	signal2 := make([]float64, len(signal1))
+	for i := range signal2 {
+		signal2[i] = 3.0 + signal1[i]
+	}
+
+	if err := sound.Play(sound.NewSound(signal2)); err != nil {
+		return err
+	}
+
+	return nil
+}

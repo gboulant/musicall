@@ -1,11 +1,14 @@
 all:
 
+cmds.%:
+	@make -C cmds/plotwave $*
+	@make -C cmds/examples $*
+
 test:
 	@go test -C wave
 	@go test -C sound
-	@make -C cmds/plotwave test
-	@make -C cmds/examples test
+	@make cmds.test
 
 clean:
-	@make -C cmds/plotwave clean
-	@make -C cmds/examples clean
+	@find -name "output.*" | xargs rm -f
+	@make cmds.clean
