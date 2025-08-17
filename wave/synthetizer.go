@@ -56,14 +56,60 @@ type sineWaveSynthesizer struct {
 	harmonicSynthesizer
 }
 
+/* IMPORTANT REMARK for the computation of sinus angle
+
+A sine wave is a signal whose value S at time t is:
+
+ S(t) = A * sin(2*Pi * t/T)
+
+Where:
+
+- A is the amplitude of the signal
+- T is the period of the signal (when t=T, a cycle is done)
+
+Our parameters are f the frequency and r the samplerate, i.e. the number
+of samples in one second. Then we can rewrite the variables:
+
+- t = i / r (where i is the index of the sample, when i=r then t=1)
+- T = 1 / f
+
+Then the value of index i of the signal is:
+
+ S(i) = A * sin(2*Pi * i*f/r)
+
+The index should go from i=0 (first sample) to i=d * r (last sample)
+where d is the duration of the signal in second (r points in one
+second).
+
+IMPORTANT REMARK (to understand the implementations we use for computing
+the angle of the sinus):
+
+The angle of the sinus is a(i) = 2*Pi * i*f/r. It is a first way to
+calculate this value and compute the sinus value. An alternative is to
+consider that we add an increment of 2*Pi*f/r to the angle value at each
+sample. This second manner should be prefered in the case where we
+execute a sweeping of the frequency, or a frequency modulation to be
+sure that the angle increase at each step. With the formula a(i) =
+2*Pi*i*f/r and a frequency rising down, you may experiment an angle
+value that could decrease for some values of i even if i is increasing,
+resulting to an unpedictable signal (at least not the signal you would
+expect).
+
+In the following, we use the second way to implement the angle
+increment, i.e. we add the value 2*Pi*f/r at each step.
+
+*/
+
 // Synthesize creates a sine wave signal
 func (s sineWaveSynthesizer) Synthesize(duration float64) []float64 {
 	size := int(duration * float64(s.sampleRate))
 	samples := make([]float64, size)
-	var angle float64 = math.Pi * 2 / float64(s.sampleRate)
+	var angleIncrement float64 = math.Pi * 2 * s.frequency / float64(s.sampleRate)
 
+	var angle float64 = 0.
 	for i := range samples {
-		samples[i] = s.amplitude * math.Sin(angle*s.frequency*float64(i))
+		samples[i] = s.amplitude * math.Sin(angle)
+		angle += angleIncrement
 	}
 	return samples
 }
@@ -146,30 +192,32 @@ func NewKarplusStrongSynthesizer(frequency float64, amplitude float64, sampleRat
 // -------------------------------------------------------------
 type sweepFrequencySynthesizer struct {
 	harmonicSynthesizer
-	frequencyMin float64
-	frequencyMax float64
+	frequencyStart float64
+	frequencyEnd   float64
 }
 
 func (s sweepFrequencySynthesizer) Synthesize(duration float64) []float64 {
 	size := int(duration * float64(s.sampleRate))
 	samples := make([]float64, size)
-	var angle float64 = math.Pi * 2 / float64(s.sampleRate)
+	var angleIncrementFactor float64 = math.Pi * 2 / float64(s.sampleRate)
 
-	deltafreq := (s.frequencyMax - s.frequencyMin) / float64(size)
-	var frequency float64
+	deltafreq := (s.frequencyEnd - s.frequencyStart) / float64(size)
+	var angle float64 = 0.
+	var frequency float64 = s.frequencyStart
 	for i := range samples {
-		frequency = s.frequencyMin + deltafreq*float64(i)
-		samples[i] = s.amplitude * math.Sin(angle*frequency*float64(i))
+		samples[i] = s.amplitude * math.Sin(angle)
+		frequency += deltafreq
+		angle += angleIncrementFactor * frequency
 	}
 	return samples
 }
 
-func NewSweepFrequencySynthesizer(frequencyMin, frequencyMax float64, amplitude float64, sampleRate int) HarmonicSynthesizer {
+func NewSweepFrequencySynthesizer(frequencyStart, frequencyEnd float64, amplitude float64, sampleRate int) HarmonicSynthesizer {
 	return sweepFrequencySynthesizer{
 		harmonicSynthesizer{
 			sampleRate: sampleRate,
 			amplitude:  amplitude},
-		frequencyMin,
-		frequencyMax,
+		frequencyStart,
+		frequencyEnd,
 	}
 }

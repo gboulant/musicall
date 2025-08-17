@@ -113,7 +113,8 @@ func TestSweepFrequency01(t *testing.T) {
 	s = w.Synthesize(d)
 	Play(NewSound(s))
 
-	wave.Reverse(&s)
+	w = wave.NewSweepFrequencySynthesizer(f1, f0, a, int(sampleRate))
+	s = w.Synthesize(d)
 	Play(NewSound(s))
 }
 

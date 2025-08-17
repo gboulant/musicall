@@ -5,7 +5,7 @@ import (
 )
 
 func d01_KarplusStrong(r int) []float64 {
-	f := 5.
+	f := 440.
 	a := 2.
 	d := 4.
 	return KarplusStrongSignal(f, a, d, r)
@@ -19,18 +19,28 @@ func d02_sweepfrequency(r int, reverse bool) []float64 {
 	return SweepFrequencySignal(fmin, fmax, a, d, r, reverse)
 }
 
+func decimate(samples []float64, samplerate int, step int) ([]float64, int) {
+	return Decimate(samples, step), samplerate / step
+}
+
 func TestPlotToFile(t *testing.T) {
-	samplerate := DefaultSampleRate / 1000
+	// We generate the signal with the default sample rate (so that it
+	// can be played if needed), but we decimate the signal to plot, to
+	// make a plot not to heavy to display.
+	samplerate := DefaultSampleRate
+	decimatestep := 100
 
 	samples := d01_KarplusStrong(samplerate)
 	outfilepath := "output.d01_KarplusStrong.html"
-	if err := PlotToFile(outfilepath, samples, samplerate); err != nil {
+	pltsamples, pltsamplerate := decimate(samples, samplerate, decimatestep)
+	if err := PlotToFile(outfilepath, pltsamples, pltsamplerate); err != nil {
 		t.Error(err)
 	}
 
 	samples = d02_sweepfrequency(samplerate, false)
 	outfilepath = "output.d02_sweepfrequency.html"
-	if err := PlotToFile(outfilepath, samples, samplerate); err != nil {
+	pltsamples, pltsamplerate = decimate(samples, samplerate, decimatestep)
+	if err := PlotToFile(outfilepath, pltsamples, pltsamplerate); err != nil {
 		t.Error(err)
 	}
 }

@@ -115,7 +115,7 @@ func DEMO02_vibrato() error {
 // ----------------------------------------------------------------
 func DEMO03_amplitude_modulation() error {
 
-	desimate := true
+	desimate := false
 
 	f := 440.
 	a := 1.
@@ -134,10 +134,14 @@ func DEMO03_amplitude_modulation() error {
 	samples := make([]float64, size)
 	var angle float64 = math.Pi * 2 / float64(r)
 
+	var angleModulation float64 = 0.
+	var angleSample float64 = 0.
+	var amplitude float64 = a
 	for i := range samples {
-		phase := angle * f * float64(i)
-		amplitude := a + ma*math.Sin(angle*mf*float64(i))
-		samples[i] = amplitude * math.Sin(phase)
+		samples[i] = amplitude * math.Sin(angleSample)
+		angleSample += angle * f
+		angleModulation += angle * mf
+		amplitude = a + ma*math.Sin(angleModulation)
 	}
 
 	wave.PlotToFile("output.DEMO03_amplitude_modulation.html", samples, r)
@@ -161,7 +165,7 @@ func DEMO04_frequency_modulation() error {
 
 	f := 440.
 	a := 1.
-	d := 4.
+	d := 3.
 	r := int(sampleRate)
 
 	if desimate {
@@ -169,16 +173,20 @@ func DEMO04_frequency_modulation() error {
 	}
 
 	mf := f * 0.1 // fréquence de la modulation de frequence
-	ma := f * 0.1 // amplitude de la modulation de fréquence
+	ma := f * 0.2 // amplitude de la modulation de fréquence
 
 	size := int(d * float64(r))
 	samples := make([]float64, size)
 	var angle float64 = math.Pi * 2 / float64(r)
 
+	var angleModulation float64 = 0.
+	var angleSample float64 = 0.
+	var frequency float64 = f
 	for i := range samples {
-		frequency := f + ma*math.Sin(angle*mf*float64(i))
-		phase := angle * frequency * float64(i)
-		samples[i] = a * math.Sin(phase)
+		samples[i] = a * math.Sin(angleSample)
+		angleModulation += angle * mf
+		frequency = f + ma*math.Sin(angleModulation)
+		angleSample += angle * frequency
 	}
 
 	wave.PlotToFile("output.DEMO04_frequency_modulation.html", samples, int(r))
