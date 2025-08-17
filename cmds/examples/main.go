@@ -13,7 +13,7 @@ func init() {
 	NewExample("D02", "vibrato", DEMO02_vibrato)
 	NewExample("D03", "modulation d'amplitude", DEMO03_amplitude_modulation)
 	NewExample("D04", "modulation de fréquence", DEMO04_frequency_modulation)
-
+	NewExample("D05", "sounds like a laser", DEMO05_sounds_like_a_laser)
 }
 
 func main() {

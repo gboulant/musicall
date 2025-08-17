@@ -30,6 +30,16 @@ func TestDecimate(t *testing.T) {
 	r := DefaultSampleRate
 	s := SineWaveSignal(f, a, d, r)
 
+	// Note that the number of sample points by cycle is Nc = r*T = r/f.
+	// After decimation, the number of points by cycle is reduced with a
+	// factor step: Nc = r/(f*step). Then be carrefull when choosing the
+	// decimation step, and take care of the cycle frequencies.
+	//
+	// For example, if the frequency is f=440 (La) and the sample rate
+	// is r=44100~44000, then the original Nc is Nc=r/f=44000/440=100.
+	// If you choose a decimation step around 100, you will have one
+	// point by cycle.
+
 	step := 10
 	decimate := Decimate(s, step)
 

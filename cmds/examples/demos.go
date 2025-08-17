@@ -32,6 +32,9 @@ func sinesound(f float64, a float64, d float64) beep.Streamer {
 func silence(duration float64) beep.Streamer {
 	return generators.Silence(int(duration * float64(sampleRate)))
 }
+func decimate(samples []float64, samplerate int, step int) ([]float64, int) {
+	return wave.Decimate(samples, step), samplerate / step
+}
 
 // ----------------------------------------------------------------
 func DEMO01_quintes() error {
@@ -115,42 +118,31 @@ func DEMO02_vibrato() error {
 // ----------------------------------------------------------------
 func DEMO03_amplitude_modulation() error {
 
-	desimate := false
-
 	f := 440.
 	a := 1.
 	d := 3.
 	r := int(sampleRate)
-
-	if desimate {
-		f = f / 10.
-		r = int(sampleRate / 100)
-	}
 
 	mf := f * 0.1 // fréquence de la modulation d'amplitude
 	ma := a * 0.2 // amplitude de la modulation d'amplitude
 
 	size := int(d * float64(r))
 	samples := make([]float64, size)
-	var angle float64 = math.Pi * 2 / float64(r)
+	angleIncrementFactor := math.Pi * 2 / float64(r)
+	angleIncrement := angleIncrementFactor * f
 
 	var angleModulation float64 = 0.
 	var angleSample float64 = 0.
 	var amplitude float64 = a
 	for i := range samples {
 		samples[i] = amplitude * math.Sin(angleSample)
-		angleSample += angle * f
-		angleModulation += angle * mf
+		angleSample += angleIncrement
+		angleModulation += angleIncrementFactor * mf
 		amplitude = a + ma*math.Sin(angleModulation)
 	}
 
-	wave.PlotToFile("output.DEMO03_amplitude_modulation.html", samples, r)
-
-	if desimate {
-		// Do not play the sound, the sample rate is not consistent with
-		// the speaker
-		return nil
-	}
+	plts, pltr := decimate(samples, r, 10)
+	wave.PlotToFile("output.DEMO03_amplitude_modulation.html", plts, pltr)
 
 	if err := sound.Play(sound.NewSound(samples)); err != nil {
 		return err
@@ -161,41 +153,80 @@ func DEMO03_amplitude_modulation() error {
 
 // ----------------------------------------------------------------
 func DEMO04_frequency_modulation() error {
-	desimate := false
 
 	f := 440.
 	a := 1.
 	d := 3.
 	r := int(sampleRate)
 
-	if desimate {
-		r = int(sampleRate / 100)
-	}
-
 	mf := f * 0.1 // fréquence de la modulation de frequence
-	ma := f * 0.2 // amplitude de la modulation de fréquence
+	ma := f * 0.4 // amplitude de la modulation de fréquence
 
 	size := int(d * float64(r))
 	samples := make([]float64, size)
-	var angle float64 = math.Pi * 2 / float64(r)
+	var angleInclementFactor float64 = math.Pi * 2 / float64(r)
 
 	var angleModulation float64 = 0.
 	var angleSample float64 = 0.
 	var frequency float64 = f
 	for i := range samples {
 		samples[i] = a * math.Sin(angleSample)
-		angleModulation += angle * mf
+		angleModulation += angleInclementFactor * mf
 		frequency = f + ma*math.Sin(angleModulation)
-		angleSample += angle * frequency
+		angleSample += angleInclementFactor * frequency
 	}
 
-	wave.PlotToFile("output.DEMO04_frequency_modulation.html", samples, int(r))
+	plts, pltr := decimate(samples, r, 5)
+	wave.PlotToFile("output.DEMO04_frequency_modulation.html", plts, pltr)
 
-	if desimate {
-		// Do not play the sound, the sample rate is not consistent with
-		// the speaker
-		return nil
+	if err := sound.Play(sound.NewSound(samples)); err != nil {
+		return err
 	}
+
+	return nil
+}
+
+// ----------------------------------------------------------------
+
+// DEMO05_sounds_like_a_laser emulates the sound of a laser saber
+// starting. In fact it is the same implementation than the frequency
+// modulation above, but with a buggy computation of the sinus angle.
+// Indeed when computing the angle like a factor of products (using the
+// step i as product) then you may see the angle phase decrease at some
+// points because the frequency is rising down, even if i increases). It
+// was a buggy version that let me discover a kind of laser sound.
+// Chance.
+func DEMO05_sounds_like_a_laser() error {
+
+	f := 440.
+	a := 1.
+	d := 8.
+	r := int(sampleRate)
+
+	mf := f * 0.1 // fréquence de la modulation de frequence
+	ma := f * 0.1 // amplitude de la modulation de fréquence
+
+	// We observe:
+	// - the more the ma is the longer the starting step is (and then
+	// the period of the shuffle afterward).)
+
+	size := int(d * float64(r))
+	samples := make([]float64, size)
+	var angleIncrementFactor float64 = math.Pi * 2 / float64(r)
+
+	var angleModulation float64
+	var angleSample float64
+	var frequency float64
+	for i := range samples {
+		angleModulation = angleIncrementFactor * mf * float64(i)
+		frequency = f + ma*math.Sin(angleModulation)
+		angleSample = angleIncrementFactor * frequency * float64(i)
+		samples[i] = a * math.Sin(angleSample)
+	}
+
+	plts, pltr := decimate(samples, r, 5)
+	wave.PlotToFile("output.DEMO05_sounds_like_a_laser.html", plts, pltr)
+
 	if err := sound.Play(sound.NewSound(samples)); err != nil {
 		return err
 	}
