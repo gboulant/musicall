@@ -11,6 +11,7 @@ import (
 type dataset struct {
 	samples    []float64
 	samplerate int
+	label      string
 }
 
 // payload is a local dataset to communicate data between the httpplot
@@ -23,9 +24,10 @@ func httpserver(w http.ResponseWriter, _ *http.Request) {
 	// Prepare the data
 	samples := payload.samples
 	samplerate := payload.samplerate
+	label := payload.label
 
 	// Create the plot with rendering into the http writer
-	if err := wave.Plot(w, samples, samplerate); err != nil {
+	if err := wave.Plot(w, samples, samplerate, label); err != nil {
 		fmt.Fprintln(w, err)
 	}
 }
@@ -34,6 +36,7 @@ func httpserver(w http.ResponseWriter, _ *http.Request) {
 func httpplot(samples []float64, samplerate int) error {
 	payload.samplerate = samplerate
 	payload.samples = samples
+	payload.label = "Signal"
 	http.HandleFunc("/", httpserver)
 	log.Println("Plot server is running on http://localhost:8081")
 	return http.ListenAndServe(":8081", nil)

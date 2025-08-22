@@ -15,7 +15,7 @@ import (
 // Plot the data using a standalone configuration (create a local html file)
 func fileplot(samples []float64, samplerate int) error {
 	outfilepath := "output.wavechart.html"
-	return wave.PlotToFile(outfilepath, samples, samplerate)
+	return wave.PlotToFile(outfilepath, samples, samplerate, "Wave Chart")
 }
 
 // ----------------------------------------------------------------

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"math"
 	"time"
@@ -142,7 +143,9 @@ func DEMO03_amplitude_modulation() error {
 	}
 
 	plts, pltr := decimate(samples, r, 10)
-	wave.PlotToFile("output.DEMO03_amplitude_modulation.html", plts, pltr)
+	label := "DEMO03_amplitude_modulation"
+	outpath := fmt.Sprintf("output.%s.html", label)
+	wave.PlotToFile(outpath, plts, pltr, label)
 
 	if err := sound.Play(sound.NewSound(samples)); err != nil {
 		return err
@@ -177,7 +180,9 @@ func DEMO04_frequency_modulation() error {
 	}
 
 	plts, pltr := decimate(samples, r, 5)
-	wave.PlotToFile("output.DEMO04_frequency_modulation.html", plts, pltr)
+	label := "DEMO04_frequency_modulation"
+	outpath := fmt.Sprintf("output.%s.html", label)
+	wave.PlotToFile(outpath, plts, pltr, label)
 
 	if err := sound.Play(sound.NewSound(samples)); err != nil {
 		return err
@@ -225,7 +230,9 @@ func DEMO05_sounds_like_a_laser() error {
 	}
 
 	plts, pltr := decimate(samples, r, 5)
-	wave.PlotToFile("output.DEMO05_sounds_like_a_laser.html", plts, pltr)
+	label := "DEMO05_sounds_like_a_laser"
+	outpath := fmt.Sprintf("output.%s.html", label)
+	wave.PlotToFile(outpath, plts, pltr, label)
 
 	if err := sound.Play(sound.NewSound(samples)); err != nil {
 		return err
