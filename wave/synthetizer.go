@@ -145,7 +145,6 @@ func (s squareWaveSynthesizer) Synthesize(duration float64) []float64 {
 		}
 	}
 	return samples
-
 }
 
 func NewSquareWaveSynthesizer(frequency float64, amplitude float64, sampleRate int) HarmonicSynthesizer {
@@ -157,6 +156,88 @@ func NewSquareWaveSynthesizer(frequency float64, amplitude float64, sampleRate i
 }
 
 // -------------------------------------------------------------
+// triangleWaveSynthesizer is a synthesizer for creating a triangle wave
+type triangleWaveSynthesizer struct {
+	harmonicSynthesizer
+	risingrate float64
+}
+
+// Synthesize creates a triangle wave signal
+func (s triangleWaveSynthesizer) Synthesize(duration float64) []float64 {
+	size := int(duration * float64(s.sampleRate))
+	samples := make([]float64, size)
+
+	period_duration_seconds := 1. / s.frequency
+	samples_by_period := period_duration_seconds * float64(s.sampleRate)
+	riseslope_samples := samples_by_period * s.risingrate
+
+	// We have to make sure that there is at least one sample point in
+	// each slope (when the rising rate is close to 0 or 1)
+	if riseslope_samples < 1. {
+		riseslope_samples = 1
+	} else if riseslope_samples > (samples_by_period - 1) {
+		riseslope_samples = samples_by_period - 1
+	}
+	downslope_samples := samples_by_period - riseslope_samples
+
+	riseslope_step := 2 * s.amplitude / riseslope_samples
+	downslope_step := -2 * s.amplitude / downslope_samples
+
+	value := -s.amplitude
+	step := riseslope_step
+	// On démarre le signal à la valeur -a avec une pente montante. La
+	// pente change de sens (vers le bas) si l'amplitude dépasse
+	// l'amplitude max (+a) ou si le temps dans le cycle dépasse la
+	// durée montante. Elle change de sens (vers le haut) si l'amplitude
+	// descend en dessous de l'amplitude minimum (-a). C'est l'algo qui
+	// permet d'obtenir les signaux les plus propres même quand le
+	// risingrate est proche de 0 ou 1.
+	for i := range samples {
+		samples[i] = value
+		value += step
+		if value > s.amplitude || i%int(samples_by_period) >= int(riseslope_samples) {
+			value = s.amplitude
+			step = downslope_step
+		} else if value < -s.amplitude {
+			value = -s.amplitude
+			step = riseslope_step
+		}
+	}
+	return samples
+}
+
+func NewTriangleWaveSynthesizer(frequency float64, amplitude float64, sampleRate int, risingrate float64) HarmonicSynthesizer {
+	return triangleWaveSynthesizer{
+		harmonicSynthesizer{
+			sampleRate: sampleRate,
+			frequency:  frequency,
+			amplitude:  amplitude},
+		risingrate,
+	}
+}
+
+func NewRegularTriangleWaveSynthesizer(frequency float64, amplitude float64, sampleRate int) HarmonicSynthesizer {
+	risingrate := 0.5
+	return triangleWaveSynthesizer{
+		harmonicSynthesizer{
+			sampleRate: sampleRate,
+			frequency:  frequency,
+			amplitude:  amplitude},
+		risingrate,
+	}
+}
+
+func NewSawtoothWaveSynthesizer(frequency float64, amplitude float64, sampleRate int) HarmonicSynthesizer {
+	risingrate := 1.
+	return triangleWaveSynthesizer{
+		harmonicSynthesizer{
+			sampleRate: sampleRate,
+			frequency:  frequency,
+			amplitude:  amplitude},
+		risingrate}
+}
+
+// -------------------------------------------------------------
 // karplusStrongSynthesizer is a synthesizer for creating a square wave
 type karplusStrongSynthesizer struct {
 	harmonicSynthesizer
@@ -165,7 +246,7 @@ type karplusStrongSynthesizer struct {
 func (s karplusStrongSynthesizer) Synthesize(duration float64) []float64 {
 	noise := make([]float64, int(float64(s.sampleRate)/s.frequency))
 	for i := range noise {
-		noise[i] = s.amplitude*rand.Float64()*2 - 1
+		noise[i] = s.amplitude * (rand.Float64()*2 - 1)
 	}
 	// the buffer noise has a duration equal to the period of the signal
 	// (1/f). And then we repeatedly copy this buffer for any period that

@@ -22,7 +22,7 @@ func data(samples []float64, samplerate int) (xdata []float64, ydata []opts.Line
 }
 
 // line creates a echart line from the specified echart timeseries
-func line(xdata []float64, ydata []opts.LineData) *charts.Line {
+func line(xdata []float64, ydata []opts.LineData, label string) *charts.Line {
 
 	// create a new line instance
 	line := charts.NewLine()
@@ -58,7 +58,7 @@ func line(xdata []float64, ydata []opts.LineData) *charts.Line {
 
 	// Put data into instance
 	line.SetXAxis(xdata)
-	line.AddSeries("Sine Wave", ydata)
+	line.AddSeries(label, ydata)
 
 	//smooth := true
 	//line.SetSeriesOptions(charts.WithLineChartOpts(opts.LineChart{Smooth: &smooth}))
@@ -67,19 +67,19 @@ func line(xdata []float64, ydata []opts.LineData) *charts.Line {
 
 // Plot draws the samples series into the specified writer. The writer
 // could be an html file writer or an http writer
-func Plot(w io.Writer, samples []float64, samplerate int) error {
+func Plot(w io.Writer, samples []float64, samplerate int, label string) error {
 	xdata, ydata := data(samples, samplerate)
-	chart := line(xdata, ydata)
+	chart := line(xdata, ydata, label)
 	return chart.Render(w)
 }
 
 // PlotToFile execute the Plot function with a writer opened on the
 // specified output file
-func PlotToFile(htmlpath string, samples []float64, samplerate int) error {
+func PlotToFile(htmlpath string, samples []float64, samplerate int, label string) error {
 	f, _ := os.Create(htmlpath)
 	defer f.Close()
 
-	if err := Plot(f, samples, samplerate); err != nil {
+	if err := Plot(f, samples, samplerate, label); err != nil {
 		return err
 	}
 	log.Printf("Result available in file %s", htmlpath)

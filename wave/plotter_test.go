@@ -1,6 +1,7 @@
 package wave
 
 import (
+	"os"
 	"testing"
 )
 
@@ -33,14 +34,52 @@ func TestPlotToFile(t *testing.T) {
 	samples := d01_KarplusStrong(samplerate)
 	outfilepath := "output.d01_KarplusStrong.html"
 	pltsamples, pltsamplerate := decimate(samples, samplerate, decimatestep)
-	if err := PlotToFile(outfilepath, pltsamples, pltsamplerate); err != nil {
+	if err := PlotToFile(outfilepath, pltsamples, pltsamplerate, "KarplusStrong"); err != nil {
 		t.Error(err)
 	}
 
 	samples = d02_sweepfrequency(samplerate, false)
 	outfilepath = "output.d02_sweepfrequency.html"
 	pltsamples, pltsamplerate = decimate(samples, samplerate, decimatestep)
-	if err := PlotToFile(outfilepath, pltsamples, pltsamplerate); err != nil {
+	if err := PlotToFile(outfilepath, pltsamples, pltsamplerate, "sweepfrequency"); err != nil {
 		t.Error(err)
 	}
+}
+
+func TestWaveSynthesizers(t *testing.T) {
+	f := 10.
+	a := 2.
+	d := 4.
+	r := int(1000 * f) // 100 points by cycle
+
+	s := NewSineWaveSynthesizer(f, a, r)
+	samples := s.Synthesize(d)
+	xdata, ydata := data(samples, r)
+	chart := line(xdata, ydata, "Sine")
+
+	s = NewSquareWaveSynthesizer(f, a, r)
+	samples = s.Synthesize(d)
+	_, ydata = data(samples, r)
+	chart.AddSeries("Square", ydata)
+
+	s = NewKarplusStrongSynthesizer(f, a, r)
+	samples = s.Synthesize(d)
+	_, ydata = data(samples, r)
+	chart.AddSeries("KarplusStrong", ydata)
+
+	s = NewTriangleWaveSynthesizer(f, a, r, 0.5)
+	samples = s.Synthesize(d)
+	_, ydata = data(samples, r)
+	chart.AddSeries("Triangle", ydata)
+
+	s = NewSawtoothWaveSynthesizer(f, a, r)
+	samples = s.Synthesize(d)
+	_, ydata = data(samples, r)
+	chart.AddSeries("SawTooth", ydata)
+
+	outpath := "output.TestWaveSynthesizers.html"
+	outfile, _ := os.Create(outpath)
+	defer outfile.Close()
+
+	chart.Render(outfile)
 }
