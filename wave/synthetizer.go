@@ -123,22 +123,23 @@ func NewSineWaveSynthesizer(frequency float64, amplitude float64, sampleRate int
 }
 
 // -------------------------------------------------------------
-// squareWaveSynthesizer is a synthesizer for creating a square wave
-type squareWaveSynthesizer struct {
+// pwmWaveSynthesizer is a synthesizer for creating a square wave
+type pwmWaveSynthesizer struct {
 	harmonicSynthesizer
+	dutycycle float64
 }
 
-// Synthesize creates a square wave signal
-func (s squareWaveSynthesizer) Synthesize(duration float64) []float64 {
+// Synthesize creates a Pulse Width Modulation (PWM) wave signal
+func (s pwmWaveSynthesizer) Synthesize(duration float64) []float64 {
 	size := int(duration * float64(s.sampleRate))
 	samples := make([]float64, size)
 
-	period_seconds := 1. / s.frequency
-	period_samples := period_seconds * float64(s.sampleRate)
-	halfperiod_samples := period_samples * 0.5
+	period_duration_seconds := 1. / s.frequency
+	samples_by_period := period_duration_seconds * float64(s.sampleRate)
+	samples_by_dutycycle := samples_by_period * s.dutycycle
 
 	for i := range samples {
-		if i%int(period_samples) < int(halfperiod_samples) {
+		if i%int(samples_by_period) < int(samples_by_dutycycle) {
 			samples[i] = 1. * s.amplitude
 		} else {
 			samples[i] = -1. * s.amplitude
@@ -147,12 +148,23 @@ func (s squareWaveSynthesizer) Synthesize(duration float64) []float64 {
 	return samples
 }
 
-func NewSquareWaveSynthesizer(frequency float64, amplitude float64, sampleRate int) HarmonicSynthesizer {
-	return squareWaveSynthesizer{
+func NewPWMWaveSynthesizer(frequency float64, amplitude float64, sampleRate int, dutycycle float64) HarmonicSynthesizer {
+	return pwmWaveSynthesizer{
 		harmonicSynthesizer{
 			sampleRate: sampleRate,
 			frequency:  frequency,
-			amplitude:  amplitude}}
+			amplitude:  amplitude},
+		dutycycle}
+}
+
+func NewSquareWaveSynthesizer(frequency float64, amplitude float64, sampleRate int) HarmonicSynthesizer {
+	dutycycle := 0.5
+	return pwmWaveSynthesizer{
+		harmonicSynthesizer{
+			sampleRate: sampleRate,
+			frequency:  frequency,
+			amplitude:  amplitude},
+		dutycycle}
 }
 
 // -------------------------------------------------------------

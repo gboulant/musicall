@@ -16,7 +16,7 @@ import (
 const sampleRate = beep.SampleRate(wave.DefaultSampleRate)
 
 func init() {
-	// Le speaker est initialisé avec un sample rate donnée. Tous les
+	// Le speaker est initialisé avec un sample rate fixé. Tous les
 	// signaux ([]float64) joués par ce speaker seront considérés comme
 	// des sons avec ce sample rate. On doit donc générer des signaux
 	// avec ce sample rate.

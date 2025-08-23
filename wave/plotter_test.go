@@ -50,7 +50,7 @@ func TestWaveSynthesizers(t *testing.T) {
 	f := 10.
 	a := 2.
 	d := 4.
-	r := int(1000 * f) // 100 points by cycle
+	r := int(100 * f) // 100 points by cycle
 
 	s := NewSineWaveSynthesizer(f, a, r)
 	samples := s.Synthesize(d)
@@ -76,6 +76,11 @@ func TestWaveSynthesizers(t *testing.T) {
 	samples = s.Synthesize(d)
 	_, ydata = data(samples, r)
 	chart.AddSeries("SawTooth", ydata)
+
+	s = NewPWMWaveSynthesizer(f, a, r, 0.2)
+	samples = s.Synthesize(d)
+	_, ydata = data(samples, r)
+	chart.AddSeries("PulseWidthModulation", ydata)
 
 	outpath := "output.TestWaveSynthesizers.html"
 	outfile, _ := os.Create(outpath)

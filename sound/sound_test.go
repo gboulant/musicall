@@ -14,6 +14,10 @@ import (
 const sampleRate = beep.SampleRate(wave.DefaultSampleRate)
 
 func init() {
+	// Le speaker est initialisé avec un sample rate fixé. Tous les
+	// signaux ([]float64) joués par ce speaker seront considérés comme
+	// des sons avec ce sample rate. On doit donc générer des signaux
+	// avec ce sample rate.
 	err := speaker.Init(sampleRate, sampleRate.N(time.Second/10))
 	if err != nil {
 		log.Fatal(err)
@@ -100,10 +104,49 @@ func TestSoundWithNoise(t *testing.T) {
 	}
 }
 
+func TestWaveSynthesisers(t *testing.T) {
+	f := 440.
+	a := 1.
+	d := 2.
+	r := wave.DefaultSampleRate
+
+	var streamers []beep.Streamer
+
+	s := wave.NewSineWaveSynthesizer(f, a, r)
+	samples := s.Synthesize(d)
+	streamers = append(streamers, silence(0.4))
+	streamers = append(streamers, NewSound(samples))
+
+	s = wave.NewSquareWaveSynthesizer(f, a, r)
+	samples = s.Synthesize(d)
+	streamers = append(streamers, silence(0.4))
+	streamers = append(streamers, NewSound(samples))
+
+	s = wave.NewPWMWaveSynthesizer(f, a, r, 0.1)
+	samples = s.Synthesize(d)
+	streamers = append(streamers, silence(0.4))
+	streamers = append(streamers, NewSound(samples))
+
+	s = wave.NewRegularTriangleWaveSynthesizer(f, a, r)
+	samples = s.Synthesize(d)
+	streamers = append(streamers, silence(0.4))
+	streamers = append(streamers, NewSound(samples))
+
+	s = wave.NewSawtoothWaveSynthesizer(f, a, r)
+	samples = s.Synthesize(d)
+	streamers = append(streamers, silence(0.4))
+	streamers = append(streamers, NewSound(samples))
+
+	streamer := beep.Seq(streamers...)
+	if err := Play(streamer); err != nil {
+		t.Error(err)
+	}
+}
+
 func TestSweepFrequency01(t *testing.T) {
 	f0 := 60. // Hz
 	f1 := 280.
-	a := 5.
+	a := 1.
 	d := 2.0 // seconds
 
 	var w wave.Synthesizer
@@ -123,7 +166,7 @@ func TestSweepFrequency02(t *testing.T) {
 
 	f0 := 60. // Hz
 	f1 := 280.
-	a := 0.5
+	a := 1.
 	d := 2. // seconds
 
 	var w wave.Synthesizer
