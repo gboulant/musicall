@@ -44,14 +44,20 @@ var Label2Index map[string]NoteIndex = map[string]NoteIndex{
 	"Si":   11,
 }
 
+// A noter (pour la culture):
+// L'ensemble de ces notes (de 0 à 11) compose la gamme dite chromatique.
+// La restriction aux notes non altérées compose la gamme dites diatonique
+
 type Note struct {
 	Octave int       // index of the octave where is considered the note
 	Index  NoteIndex // index of the note in the octave, counted in number of half-tones
 }
 
 func (n *Note) Add(interval Interval) {
-	n.Octave = n.Octave + int(interval/Octave)
-	n.Index = NoteIndex(int(n.Index) % int(Octave))
+	i := Interval(n.Octave*int(Octave) + int(n.Index))
+	i += interval
+	n.Octave = int(i / Octave)
+	n.Index = NoteIndex(i % Octave)
 }
 
 func (n Note) IntervalTo(other Note) Interval {

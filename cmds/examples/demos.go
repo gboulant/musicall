@@ -37,6 +37,61 @@ func decimate(samples []float64, samplerate int, step int) ([]float64, int) {
 	return wave.Decimate(samples, step), samplerate / step
 }
 
+func labeledStreamer(f float64, duration float64, name string) beep.Streamer {
+	s := wave.NewKarplusStrongSynthesizer(f, 1., int(sampleRate))
+	samples := s.Synthesize(duration)
+	label := fmt.Sprintf("note: %-4s (f=%.1f Hz)", name, f)
+	return sound.LabelledStreamer(sound.NewSound(samples), label)
+}
+
+func DEMO00_logscale() error {
+	duration := 1.0
+	streamers := make([]beep.Streamer, 0)
+	streamers = append(streamers, generators.Silence(int(duration*float64(sampleRate))))
+
+	// En echelle logarithmique (log à base 2), les notes sont espacées
+	// d'un intervalle de 1/12 (entre Do et Do# par exemple, et 2/12
+	// entre Do et Ré, T = 2/12):
+	//
+	// Do -T-> Ré -T-> Mi -T/2-> Fa -T-> Sol -T-> La -T-> Si -T/2-> Do
+	//
+
+	fLa := 440.0 // Hz
+	lLa := math.Log2(fLa)
+	lDo := lLa - 9/12.
+	notes := []struct {
+		logf float64
+		name string
+	}{
+		{logf: lDo, name: "Do"},
+		{logf: lDo + 1/12., name: "Do#"},
+		{logf: lDo + 2/12., name: "Ré"},
+		{logf: lDo + 3/12., name: "Ré#"},
+		{logf: lDo + 4/12., name: "Mi"},
+		{logf: lDo + 5/12., name: "Fa"},
+		{logf: lDo + 6/12., name: "Fa#"},
+		{logf: lDo + 7/12., name: "Sol"},
+		{logf: lDo + 8/12., name: "Sol#"},
+		{logf: lDo + 9/12., name: "La"},
+		{logf: lDo + 10/12., name: "La#"},
+		{logf: lDo + 11/12., name: "Si"},
+		{logf: lDo + 12/12., name: "Do"},
+	}
+
+	for _, note := range notes {
+		f := math.Pow(2, note.logf)
+		s := labeledStreamer(f, duration, note.name)
+		streamers = append(streamers, s)
+	}
+
+	streamer := beep.Seq(streamers...)
+	if err := sound.Play(streamer); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // ----------------------------------------------------------------
 func DEMO01_quintes() error {
 

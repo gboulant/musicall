@@ -19,12 +19,8 @@ func NewGuitar(sampleRate int) *Guitar {
 	return &g
 }
 
-//func (g Guitarilence(duration float64) beep.Streamer {
-//	return generators.Silence(int(duration * float64(sampleRate)))
-//}
-
 func (g Guitar) Pluck(note Note, duration float64) beep.Streamer {
-	frequency := 10. // should be computed from Note
+	frequency := note.Frequency()
 	g.synthesizer.SetFrequency(frequency)
 	samples := g.synthesizer.Synthesize(duration)
 	return sound.NewSound(samples)

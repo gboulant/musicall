@@ -1,25 +1,50 @@
 package guitar
 
-type StringNumber int
+// ----------------------------------------------------------------------
+// Définition des accord principaux
+type Notes []Note
 
-// Les cordes de guitare sont numérotées de 1 (la corde la plus
-// aigue, le Mi3) à 6 la corde la plus grave (Mi1)
-const (
-	Mi3 StringNumber = iota + 1
-	Si2
-	Sol2
-	Re2
-	La1
-	Mi1
-)
-
-type Note struct {
-	StringNum int
-	FretNum   int
-}
-
-func (n Note) Frequency() float64 {
-	// 1. On récupère la fréquence de la corde à vide
-	// 2. On dérive ajoute à cette fréquence l'intervalle de la frette
-	return 0.
+var StandardChords map[string]Notes = map[string]Notes{
+	"Do": {
+		Note{5, 3},
+		Note{4, 2},
+		Note{3, 0},
+		Note{2, 1},
+		Note{1, 0},
+	},
+	"Re": {
+		Note{4, 0},
+		Note{3, 2},
+		Note{2, 3},
+		Note{1, 2},
+	},
+	"Mi": {
+		Note{6, 0},
+		Note{5, 2},
+		Note{4, 2},
+		Note{3, 1},
+		Note{2, 0},
+		Note{1, 0},
+	},
+	"Fa": {
+		Note{5, 0},
+		Note{4, 3},
+		Note{3, 2},
+		Note{2, 1},
+	},
+	"Sol": {
+		Note{6, 3},
+		Note{5, 2},
+		Note{4, 0},
+		Note{3, 0},
+		Note{2, 0},
+		Note{1, 3},
+	},
+	"La": {
+		Note{5, 0},
+		Note{4, 2},
+		Note{3, 2},
+		Note{2, 2},
+		Note{1, 0},
+	},
 }

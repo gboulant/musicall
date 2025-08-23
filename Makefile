@@ -9,6 +9,7 @@ pkg.%:
 	@make -C wave $*
 	@make -C sound $*
 	@make -C music $*
+	@make -C guitar $*
 
 test: pkg.test cmds.test
 clean: pkg.clean cmds.clean

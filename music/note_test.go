@@ -118,3 +118,14 @@ func TestNote_GammeChromatique(t *testing.T) {
 	}
 
 }
+
+func TestNote_Add(t *testing.T) {
+	n := Note{0, 0} // Do0
+	n.Add(45)
+
+	exp := Note{3, 9} // La3
+	if n.Octave != exp.Octave || n.Index != exp.Index {
+		t.Errorf("result is %v (should be %v)", n, exp)
+	}
+
+}
