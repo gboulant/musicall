@@ -29,6 +29,8 @@ type HarmonicSynthesizer interface {
 	Synthesizer
 	Frequency() float64
 	Amplitude() float64
+	SetFrequency(f float64)
+	SetAmplitude(a float64)
 }
 
 // -------------------------------------------------------------
@@ -46,8 +48,16 @@ func (s harmonicSynthesizer) Frequency() float64 {
 	return s.frequency
 }
 
+func (s *harmonicSynthesizer) SetFrequency(f float64) {
+	s.frequency = f
+}
+
 func (s harmonicSynthesizer) Amplitude() float64 {
 	return s.amplitude
+}
+
+func (s *harmonicSynthesizer) SetAmplitude(a float64) {
+	s.amplitude = a
 }
 
 // -------------------------------------------------------------
@@ -115,7 +125,7 @@ func (s sineWaveSynthesizer) Synthesize(duration float64) []float64 {
 }
 
 func NewSineWaveSynthesizer(frequency float64, amplitude float64, sampleRate int) HarmonicSynthesizer {
-	return sineWaveSynthesizer{
+	return &sineWaveSynthesizer{
 		harmonicSynthesizer{
 			sampleRate: sampleRate,
 			frequency:  frequency,
@@ -149,7 +159,7 @@ func (s pwmWaveSynthesizer) Synthesize(duration float64) []float64 {
 }
 
 func NewPWMWaveSynthesizer(frequency float64, amplitude float64, sampleRate int, dutycycle float64) HarmonicSynthesizer {
-	return pwmWaveSynthesizer{
+	return &pwmWaveSynthesizer{
 		harmonicSynthesizer{
 			sampleRate: sampleRate,
 			frequency:  frequency,
@@ -159,7 +169,7 @@ func NewPWMWaveSynthesizer(frequency float64, amplitude float64, sampleRate int,
 
 func NewSquareWaveSynthesizer(frequency float64, amplitude float64, sampleRate int) HarmonicSynthesizer {
 	dutycycle := 0.5
-	return pwmWaveSynthesizer{
+	return &pwmWaveSynthesizer{
 		harmonicSynthesizer{
 			sampleRate: sampleRate,
 			frequency:  frequency,
@@ -219,7 +229,7 @@ func (s triangleWaveSynthesizer) Synthesize(duration float64) []float64 {
 }
 
 func NewTriangleWaveSynthesizer(frequency float64, amplitude float64, sampleRate int, risingrate float64) HarmonicSynthesizer {
-	return triangleWaveSynthesizer{
+	return &triangleWaveSynthesizer{
 		harmonicSynthesizer{
 			sampleRate: sampleRate,
 			frequency:  frequency,
@@ -230,7 +240,7 @@ func NewTriangleWaveSynthesizer(frequency float64, amplitude float64, sampleRate
 
 func NewRegularTriangleWaveSynthesizer(frequency float64, amplitude float64, sampleRate int) HarmonicSynthesizer {
 	risingrate := 0.5
-	return triangleWaveSynthesizer{
+	return &triangleWaveSynthesizer{
 		harmonicSynthesizer{
 			sampleRate: sampleRate,
 			frequency:  frequency,
@@ -241,7 +251,7 @@ func NewRegularTriangleWaveSynthesizer(frequency float64, amplitude float64, sam
 
 func NewSawtoothWaveSynthesizer(frequency float64, amplitude float64, sampleRate int) HarmonicSynthesizer {
 	risingrate := 1.
-	return triangleWaveSynthesizer{
+	return &triangleWaveSynthesizer{
 		harmonicSynthesizer{
 			sampleRate: sampleRate,
 			frequency:  frequency,
@@ -275,7 +285,7 @@ func (s karplusStrongSynthesizer) Synthesize(duration float64) []float64 {
 }
 
 func NewKarplusStrongSynthesizer(frequency float64, amplitude float64, sampleRate int) HarmonicSynthesizer {
-	return karplusStrongSynthesizer{
+	return &karplusStrongSynthesizer{
 		harmonicSynthesizer{
 			sampleRate: sampleRate,
 			frequency:  frequency,
@@ -305,8 +315,8 @@ func (s sweepFrequencySynthesizer) Synthesize(duration float64) []float64 {
 	return samples
 }
 
-func NewSweepFrequencySynthesizer(frequencyStart, frequencyEnd float64, amplitude float64, sampleRate int) HarmonicSynthesizer {
-	return sweepFrequencySynthesizer{
+func NewSweepFrequencySynthesizer(frequencyStart, frequencyEnd float64, amplitude float64, sampleRate int) Synthesizer {
+	return &sweepFrequencySynthesizer{
 		harmonicSynthesizer{
 			sampleRate: sampleRate,
 			amplitude:  amplitude},
