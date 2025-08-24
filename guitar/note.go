@@ -33,11 +33,22 @@ var stringNotes map[StringNumber]music.Note = map[StringNumber]music.Note{
 	Mi1:  {Octave: 1, Index: music.Label2Index["Mi"]},
 }
 
+// Note defines the musical note from a guitar point of view, i.e. by
+// specifying the string number to pluck and the fret number to press.
+// Concerning the string number, the convention is to designate the bass
+// Mi string (string at the top of the guitar neck) as the string number
+// 6, and the high Mi string (at the bottom of the neck) as the string
+// number 1. To avoid error, you shold use the constant definitions
+// above (Mi3=1, Si2=2, ..., Mi1=6). A fret number of 0 means "don't
+// press any fret (play the open string)".
 type Note struct {
 	StringNum StringNumber
 	FretNum   FretNumber
 }
 
+// Frequency return the major frequency of the sound corresponding to
+// this note. This frequency can be used in a synthesiser for generating
+// the sound signal.
 func (n Note) Frequency() float64 {
 	// 1. On récupère la note de la corde à vide
 	note := stringNotes[n.StringNum]

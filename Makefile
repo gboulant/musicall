@@ -4,6 +4,8 @@ cmds.%:
 	@make -C cmds/plotwave $*
 	@make -C cmds/wavechart $*
 	@make -C cmds/examples $*
+	@make -C cmds/letter2sound $*
+	@make -C cmds/playguitar $*
 
 pkg.%:
 	@make -C wave $*

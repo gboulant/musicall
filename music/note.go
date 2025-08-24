@@ -28,12 +28,13 @@ var Quinte Interval = 3*Tone + HalfTone
 type NoteIndex Interval
 
 // Label2Index can be used to get the note index in an octave from its
-// symbolic name (Do, Ré, etc.).
+// symbolic name (Do, Ré, etc.). We designate the "Ré" as "Re" (without
+// accents) so that it can be used even with a qwerty keyboard ;-).
 var Label2Index map[string]NoteIndex = map[string]NoteIndex{
 	"Do":   0,
 	"Do#":  1,
-	"Ré":   2,
-	"Ré#":  3,
+	"Re":   2,
+	"Re#":  3,
 	"Mi":   4,
 	"Fa":   5,
 	"Fa#":  6,

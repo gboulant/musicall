@@ -42,7 +42,7 @@ func TestNote_Frequency(t *testing.T) {
 		want   float64
 	}{
 		{"Do0", fields{0, Label2Index["Do"]}, 32.703},
-		{"Ré1", fields{1, Label2Index["Ré"]}, 73.416},
+		{"Ré1", fields{1, Label2Index["Re"]}, 73.416},
 		{"Mi2", fields{2, Label2Index["Mi"]}, 164.813},
 		{"Fa2", fields{2, Label2Index["Fa"]}, 174.614},
 		{"Sol2", fields{2, Label2Index["Sol"]}, 195.997},
@@ -81,7 +81,7 @@ func TestNote_GammeChromatique(t *testing.T) {
 	octave := 3
 	notes := []labelledNote{
 		newLabelledNote(octave, "Do"),
-		newLabelledNote(octave, "Ré"),
+		newLabelledNote(octave, "Re"),
 		newLabelledNote(octave, "Mi"),
 		newLabelledNote(octave, "Fa"),
 		newLabelledNote(octave, "Sol"),
