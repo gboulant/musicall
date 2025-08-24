@@ -50,12 +50,12 @@ func TestGuitar_StandardChord(t *testing.T) {
 	delai := 0.05
 	streamers := []beep.Streamer{
 		g.Silence(0.2),
-		g.Chord(StandardChords["Do"], duration, delai),
-		g.Chord(StandardChords["Re"], duration, delai),
-		g.Chord(StandardChords["Mi"], duration, delai),
-		g.Chord(StandardChords["Fa"], duration, delai),
-		g.Chord(StandardChords["Sol"], duration, delai),
-		g.Chord(StandardChords["La"], duration, delai),
+		g.Chord(StandardChord("Do"), duration, delai),
+		g.Chord(StandardChord("Re"), duration, delai),
+		g.Chord(StandardChord("Mi"), duration, delai),
+		g.Chord(StandardChord("Fa"), duration, delai),
+		g.Chord(StandardChord("Sol"), duration, delai),
+		g.Chord(StandardChord("La"), duration, delai),
 		g.Silence(1.),
 	}
 	streamer := beep.Seq(streamers...)
@@ -70,9 +70,9 @@ func TestGuitar_Reverse(t *testing.T) {
 	duration := 0.4
 	delai := 0.03
 
-	DoDown := StandardChords["Do"]
+	DoDown := StandardChord("Do")
 	DoUp := Reverse(DoDown)
-	ReDown := StandardChords["Re"]
+	ReDown := StandardChord("Re")
 	ReUp := Reverse(ReDown)
 
 	streamers := []beep.Streamer{

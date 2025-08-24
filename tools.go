@@ -3,11 +3,23 @@ package synthetic
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
 )
 
+// LogError must be used to log error on the terminal. Indeed, for a
+// more clear code, some functions that manipulate the music data don't
+// return an error, even if an error occurs (for example if trying to
+// get the note of name "Ré" while it is registered with the name "Re",
+// without accent). Instead, we call the LogError function to print the
+// error message. By default, the print uses log.Fatal that interupts the
+// process (and then you know explicitly the error and can fix it).
+var LogError = log.Fatalf
+
+//var LogError = fmt.Printf
+
 // --------------------------------------------------------------------
-// The Exemple structuree can be used to defined a set of demonstrative
+// The Example structure can be used to defined a set of demonstrative
 // examples in a executable program (see the usage in the executable
 // programs of the folder cmds, e.g. the program cmds/examples).
 

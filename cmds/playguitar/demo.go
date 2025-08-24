@@ -23,7 +23,7 @@ func init() {
 }
 
 func chord(name string) guitar.Chord {
-	return guitar.StandardChords[name]
+	return guitar.StandardChord(name)
 }
 
 var (
@@ -68,7 +68,7 @@ func T02_main_chords() error {
 	duration := 0.8 // duration of the chord
 	delay := 0.04   // delay between the string plucks
 	labelledChord := func(label string) beep.Streamer {
-		chord := guitar.StandardChords[label]
+		chord := guitar.StandardChord(label)
 		stream := g.Chord(chord, duration, delay)
 		return sound.LabelledStreamer(stream, label)
 	}
@@ -411,7 +411,7 @@ func D08_Rythm_UpDown() error {
 
 func D09_Johnny_Cash_Hurt() error {
 	g1 := guitar.NewGuitar(sampleRate)
-	ks1 := guitar.NewKarplusStrongSynthesizer(0., 1., 0.1, sampleRate)
+	ks1 := guitar.NewKarplusStrongSynthesizer(0., 1.5, 0.1, sampleRate)
 	g1.UseSynthesizer(ks1)
 
 	g2 := guitar.NewGuitar(sampleRate)

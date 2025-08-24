@@ -2,6 +2,8 @@ package music
 
 import (
 	"math"
+
+	"galuma.net/synthetic"
 )
 
 // We have to defined at least one frequency, and the other frequencies
@@ -30,7 +32,15 @@ type NoteIndex Interval
 // Label2Index can be used to get the note index in an octave from its
 // symbolic name (Do, Ré, etc.). We designate the "Ré" as "Re" (without
 // accents) so that it can be used even with a qwerty keyboard ;-).
-var Label2Index map[string]NoteIndex = map[string]NoteIndex{
+func Label2Index(label string) NoteIndex {
+	index, ok := label2Index[label]
+	if !ok {
+		synthetic.LogError("err: (Label2Index) the label %s does not exist\n", label)
+	}
+	return index
+}
+
+var label2Index map[string]NoteIndex = map[string]NoteIndex{
 	"Do":   0,
 	"Do#":  1,
 	"Re":   2,

@@ -67,7 +67,7 @@ func (e *karplusStrongSynthesizer) synthesize(frequency float64, duration float6
 	// Create initial noise
 	noise := make([]float64, int(e.sampleRate/frequency))
 	for i := range noise {
-		noise[i] = rand.Float64()*2 - 1
+		noise[i] = e.amplitude * (rand.Float64()*2 - 1)
 	}
 
 	// Apply noise filters
@@ -101,7 +101,7 @@ func pickDirectionLowpass(noise []float64) {
 }
 
 func pickPositionComb(noise []float64) {
-	pick := int(b*float64(len(noise)) + 1/2)
+	pick := int(b*float64(len(noise)) + 1./2.)
 	if pick == 0 {
 		pick = len(noise)
 	}

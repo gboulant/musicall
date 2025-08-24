@@ -1,6 +1,9 @@
 package guitar
 
-import "galuma.net/synthetic/music"
+import (
+	"galuma.net/synthetic"
+	"galuma.net/synthetic/music"
+)
 
 type StringNumber int
 type FretNumber music.Interval
@@ -24,13 +27,23 @@ const (
 // 2^5/12 ~ 1.334, soit environ 4/3, et 2⁴/12 ~ 1.259, soit environ
 // 5/4.
 
-var stringNotes map[StringNumber]music.Note = map[StringNumber]music.Note{
-	Mi3:  {Octave: 3, Index: music.Label2Index["Mi"]},
-	Si2:  {Octave: 2, Index: music.Label2Index["Si"]},
-	Sol2: {Octave: 2, Index: music.Label2Index["Sol"]},
-	Re2:  {Octave: 2, Index: music.Label2Index["Ré"]},
-	La1:  {Octave: 1, Index: music.Label2Index["La"]},
-	Mi1:  {Octave: 1, Index: music.Label2Index["Mi"]},
+// noteOfOpenString returns the music.Note played when we pluck the
+// specified open string (without pressing any fret).
+func noteOfOpenString(stringNum StringNumber) music.Note {
+	note, ok := openStringNotes[stringNum]
+	if !ok {
+		synthetic.LogError("err: (noteOfOpenString) the string number %d is not defined\n", stringNum)
+	}
+	return note
+}
+
+var openStringNotes map[StringNumber]music.Note = map[StringNumber]music.Note{
+	Mi3:  {Octave: 3, Index: music.Label2Index("Mi")},
+	Si2:  {Octave: 2, Index: music.Label2Index("Si")},
+	Sol2: {Octave: 2, Index: music.Label2Index("Sol")},
+	Re2:  {Octave: 2, Index: music.Label2Index("Re")},
+	La1:  {Octave: 1, Index: music.Label2Index("La")},
+	Mi1:  {Octave: 1, Index: music.Label2Index("Mi")},
 }
 
 // Note defines the musical note from a guitar point of view, i.e. by
@@ -51,7 +64,7 @@ type Note struct {
 // the sound signal.
 func (n Note) Frequency() float64 {
 	// 1. On récupère la note de la corde à vide
-	note := stringNotes[n.StringNum]
+	note := noteOfOpenString(n.StringNum)
 	// 2. On ajoute l'intervalle de la frette (nb de demi-tons)
 	note.Add(music.Interval(n.FretNum))
 	// 3. On calcul la fréquence

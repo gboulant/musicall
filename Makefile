@@ -5,6 +5,7 @@ cmds.%:
 	@make -C cmds/wavechart $*
 	@make -C cmds/examples $*
 	@make -C cmds/letter2sound $*
+	@make -C cmds/calibration $*
 	@make -C cmds/playguitar $*
 
 pkg.%:

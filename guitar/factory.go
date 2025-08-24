@@ -1,5 +1,7 @@
 package guitar
 
+import "galuma.net/synthetic"
+
 // ----------------------------------------------------------------------
 // Définition des accord principaux
 
@@ -22,7 +24,7 @@ func Reverse(notes Chord) Chord {
 }
 
 // StandardChords is a table of the most standard chords, identified
-// with the french naming convention (Do, Ré, Mi, etc.).
+// with the french naming convention (Do, Re, Mi, etc.).
 //
 // The first index of a note is the string number to pluck and the
 // second is the fret number to press: Note{string number to pluck, fret
@@ -37,7 +39,15 @@ func Reverse(notes Chord) Chord {
 // "don't press any fret (play the open string)". If a string number
 // does not appear in a chord list, it means that the string must not be
 // plucked.
-var StandardChords map[string]Chord = map[string]Chord{
+func StandardChord(name string) Chord {
+	chord, ok := standardChords[name]
+	if !ok {
+		synthetic.LogError("err: (StandardChord) no chord with name %s\n", name)
+	}
+	return chord
+}
+
+var standardChords map[string]Chord = map[string]Chord{
 	"Do": {
 		Note{5, 3},
 		Note{4, 2},
