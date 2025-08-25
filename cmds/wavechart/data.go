@@ -16,5 +16,5 @@ func d02_sweepfrequency(samplerate int, reverse bool) []float64 {
 	d := 10.   // sec.
 	fmin := 1. // Hz
 	fmax := 5. // Hz
-	return wave.SweepFrequencySignal(fmin, fmax, a, d, samplerate, reverse)
+	return wave.SweepFrequencySignal(fmin, fmax, a, d, reverse, samplerate)
 }

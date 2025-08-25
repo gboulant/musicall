@@ -36,11 +36,38 @@ func KarplusStrongSignal(f, a, d float64, r int) []float64 {
 // (sec), and with a samplerate r (number of samples in a sec). If r is
 // zero or negative, then the default value DefaultSampleRate is
 // applied. If reverse is true, then the sweep go from fmax to fmin.
-func SweepFrequencySignal(fmin, fmax, a, d float64, r int, reverse bool) []float64 {
+func SweepFrequencySignal(fmin, fmax, a, d float64, reverse bool, r int) []float64 {
 	w := NewSweepFrequencySynthesizer(fmin, fmax, a, SampleRate(r))
 	s := w.Synthesize(d)
 	if reverse {
 		Reverse(&s)
 	}
+	return s
+}
+
+// PWMWaveSignal creates a PWM (Pulse Width Modulation) square wave with a
+// dutycycle to be given as a number between 0 (no ON cycle) and 1 (full ON
+// cycle). A square wave is a special case of the PWM with dutycycle = 0.5.
+func PWMWaveSignal(f, a, d float64, dutycycle float64, r int) []float64 {
+	w := NewPWMWaveSynthesizer(f, a, DefaultSampleRate, dutycycle)
+	s := w.Synthesize(d)
+	return s
+}
+
+// TriangleWaveSignal creates a triangle wave from with a rising cycle equal to
+// risingrate, between 0 (vertical slope at the begining) and 1 (vertical slope
+// at the end of the cycle. The regular triangle wave form is obtained using
+// risingrate=0.5. The SawTooth wave form is a special case with risingrate = 1.
+func TriangleWaveSignal(f, a, d float64, risingrate float64, r int) []float64 {
+	w := NewTriangleWaveSynthesizer(f, a, DefaultSampleRate, risingrate)
+	s := w.Synthesize(d)
+	return s
+}
+
+// SawToothWaveSignal creates a SawTooth wave form (special case of triangle
+// wave form with risingrate = 1).
+func SawToothWaveSignal(f, a, d float64, risingrate float64, r int) []float64 {
+	w := NewSawtoothWaveSynthesizer(f, a, DefaultSampleRate)
+	s := w.Synthesize(d)
 	return s
 }

@@ -17,7 +17,7 @@ func d02_sweepfrequency(r int, reverse bool) []float64 {
 	d := 10.   // sec.
 	fmin := 1. // Hz
 	fmax := 5. // Hz
-	return SweepFrequencySignal(fmin, fmax, a, d, r, reverse)
+	return SweepFrequencySignal(fmin, fmax, a, d, reverse, r)
 }
 
 func decimate(samples []float64, samplerate int, step int) ([]float64, int) {
