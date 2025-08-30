@@ -113,5 +113,5 @@ value in a table of all possible frequencies.
 
 The executable program [cmds/plotwave](cmds/plotwave) shows how to plot
 the wave form using the matplotlib python library. It is in fact a
-techical demonstration of how to call go functions from a python context
+technical demonstration of how to call go functions from a python context
 using C go.
