@@ -51,7 +51,7 @@ var openStringNotes map[StringNumber]music.Note = map[StringNumber]music.Note{
 // Concerning the string number, the convention is to designate the bass
 // Mi string (string at the top of the guitar neck) as the string number
 // 6, and the high Mi string (at the bottom of the neck) as the string
-// number 1. To avoid error, you shold use the constant definitions
+// number 1. To avoid error, you should use the constant definitions
 // above (Mi3=1, Si2=2, ..., Mi1=6). A fret number of 0 means "don't
 // press any fret (play the open string)".
 type Note struct {
