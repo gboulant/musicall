@@ -1,4 +1,4 @@
-package synthetic
+package musicall
 
 import (
 	"flag"

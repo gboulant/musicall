@@ -8,7 +8,7 @@ import (
 	"math"
 	"math/rand"
 
-	"galuma.net/synthetic/wave"
+	"github.com/gboulant/musicall/wave"
 )
 
 // -----------------------------------------------------------------

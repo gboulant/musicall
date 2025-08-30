@@ -108,3 +108,10 @@ music](https://github.com/timiskhakov/music) project, with a
 modification that consists in calculating the frequency of a note by
 derivation from the La3 reference, instead of picking the frequency
 value in a table of all possible frequencies.
+
+## Technical features
+
+The executable program [cmds/plotwave](cmds/plotwave) shows how to plot
+the wave form using the matplotlib python library. It is in fact a
+techical demonstration of how to call go functions from a python context
+using C go.

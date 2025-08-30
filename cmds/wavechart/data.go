@@ -1,8 +1,6 @@
 package main
 
-import (
-	"galuma.net/synthetic/wave"
-)
+import "github.com/gboulant/musicall/wave"
 
 func d01_KarplusStrong(samplerate int) []float64 {
 	f := 5.

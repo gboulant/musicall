@@ -1,4 +1,4 @@
-module galuma.net/synthetic
+module github.com/gboulant/musicall
 
 go 1.24.3
 

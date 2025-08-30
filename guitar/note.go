@@ -1,8 +1,8 @@
 package guitar
 
 import (
-	"galuma.net/synthetic"
-	"galuma.net/synthetic/music"
+	"github.com/gboulant/musicall"
+	"github.com/gboulant/musicall/music"
 )
 
 type StringNumber int
@@ -32,7 +32,7 @@ const (
 func noteOfOpenString(stringNum StringNumber) music.Note {
 	note, ok := openStringNotes[stringNum]
 	if !ok {
-		synthetic.LogError("err: (noteOfOpenString) the string number %d is not defined\n", stringNum)
+		musicall.LogError("err: (noteOfOpenString) the string number %d is not defined\n", stringNum)
 	}
 	return note
 }

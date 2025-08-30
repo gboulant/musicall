@@ -3,7 +3,7 @@ package music
 import (
 	"math"
 
-	"galuma.net/synthetic"
+	"github.com/gboulant/musicall"
 )
 
 // We have to defined at least one frequency, and the other frequencies
@@ -35,7 +35,7 @@ type NoteIndex Interval
 func Label2Index(label string) NoteIndex {
 	index, ok := label2Index[label]
 	if !ok {
-		synthetic.LogError("err: (Label2Index) the label %s does not exist\n", label)
+		musicall.LogError("err: (Label2Index) the label %s does not exist\n", label)
 	}
 	return index
 }

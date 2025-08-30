@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"os"
 
-	"galuma.net/synthetic/wave"
+	"github.com/gboulant/musicall/wave"
 )
 
 // Plot the data using a standalone configuration (create a local html file)

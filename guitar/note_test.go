@@ -3,7 +3,7 @@ package guitar
 import (
 	"testing"
 
-	"galuma.net/synthetic/music"
+	"github.com/gboulant/musicall/music"
 )
 
 func TestNote_Frequency(t *testing.T) {

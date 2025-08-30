@@ -1,9 +1,12 @@
 package main
 
 import (
-	"galuma.net/synthetic/guitar"
+	"github.com/gboulant/musicall/guitar"
 	"github.com/gopxl/beep"
 )
+
+// This tablature is copied from the [timiskhakov
+// music](https://github.com/timiskhakov/music) project.
 
 func hurtLead(g *guitar.Guitar) beep.Streamer {
 	return beep.Seq(

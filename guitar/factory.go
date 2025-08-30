@@ -1,6 +1,6 @@
 package guitar
 
-import "galuma.net/synthetic"
+import "github.com/gboulant/musicall"
 
 // ----------------------------------------------------------------------
 // Définition des accord principaux
@@ -42,7 +42,7 @@ func Reverse(notes Chord) Chord {
 func StandardChord(name string) Chord {
 	chord, ok := standardChords[name]
 	if !ok {
-		synthetic.LogError("err: (StandardChord) no chord with name %s\n", name)
+		musicall.LogError("err: (StandardChord) no chord with name %s\n", name)
 	}
 	return chord
 }

@@ -1,7 +1,7 @@
 package sound
 
 import (
-	"galuma.net/synthetic/wave"
+	"github.com/gboulant/musicall/wave"
 	"github.com/gopxl/beep"
 )
 

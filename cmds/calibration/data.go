@@ -1,6 +1,6 @@
 package main
 
-import "galuma.net/synthetic/guitar"
+import "github.com/gboulant/musicall/guitar"
 
 func note(stringNum int, fretNum int) guitar.Note {
 	return guitar.Note{

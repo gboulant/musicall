@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"galuma.net/synthetic/sound"
+	"github.com/gboulant/musicall/sound"
 )
 
 func program() error {

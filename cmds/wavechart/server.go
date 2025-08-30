@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"galuma.net/synthetic/wave"
+	"github.com/gboulant/musicall/wave"
 )
 
 type dataset struct {

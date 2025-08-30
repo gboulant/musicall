@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"galuma.net/synthetic/sound"
-	"galuma.net/synthetic/wave"
+	"github.com/gboulant/musicall/sound"
+	"github.com/gboulant/musicall/wave"
 	"github.com/gopxl/beep"
 )
 

@@ -36,7 +36,7 @@ import "C"
 import (
 	"unsafe"
 
-	"galuma.net/synthetic/wave"
+	"github.com/gboulant/musicall/wave"
 )
 
 const samplerate = wave.DefaultSampleRate

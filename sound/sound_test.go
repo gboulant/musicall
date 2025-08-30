@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"galuma.net/synthetic/wave"
+	"github.com/gboulant/musicall/wave"
 	"github.com/gopxl/beep"
 	"github.com/gopxl/beep/generators"
 	"github.com/gopxl/beep/speaker"
