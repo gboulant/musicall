@@ -1,6 +1,7 @@
 all:
 
 cmds.%:
+	@make -C cmds/minimall $*
 	@make -C cmds/plotwave $*
 	@make -C cmds/wavechart $*
 	@make -C cmds/examples $*
