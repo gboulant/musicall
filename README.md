@@ -4,7 +4,7 @@ This project is a tutorial framework to illustrates some basic elements
 of the music theory. Basic knowledge of what is a sound wave can be
 required (amplitude, frequency, timbre).
 
-**contact**: [Guillaume Boulant](gboulant@gmail.com)
+**contact**: [Guillaume Boulant](mailto:gboulant@gmail.com?subject=musicall)
 
 ## Description of the project
 
