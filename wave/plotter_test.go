@@ -54,32 +54,32 @@ func TestWaveSynthesizers(t *testing.T) {
 
 	s := NewSineWaveSynthesizer(f, a, r)
 	samples := s.Synthesize(d)
-	xdata, ydata := data(samples, r)
-	chart := line(xdata, ydata, "Sine")
+	xdata, ydata := chartdata(samples, r)
+	chart := chartline(xdata, ydata, "Sine")
 
 	s = NewSquareWaveSynthesizer(f, a, r)
 	samples = s.Synthesize(d)
-	_, ydata = data(samples, r)
+	_, ydata = chartdata(samples, r)
 	chart.AddSeries("Square", ydata)
 
 	s = NewKarplusStrongSynthesizer(f, a, r)
 	samples = s.Synthesize(d)
-	_, ydata = data(samples, r)
+	_, ydata = chartdata(samples, r)
 	chart.AddSeries("KarplusStrong", ydata)
 
 	s = NewTriangleWaveSynthesizer(f, a, r, 0.5)
 	samples = s.Synthesize(d)
-	_, ydata = data(samples, r)
+	_, ydata = chartdata(samples, r)
 	chart.AddSeries("Triangle", ydata)
 
 	s = NewSawtoothWaveSynthesizer(f, a, r)
 	samples = s.Synthesize(d)
-	_, ydata = data(samples, r)
+	_, ydata = chartdata(samples, r)
 	chart.AddSeries("SawTooth", ydata)
 
 	s = NewPWMWaveSynthesizer(f, a, r, 0.2)
 	samples = s.Synthesize(d)
-	_, ydata = data(samples, r)
+	_, ydata = chartdata(samples, r)
 	chart.AddSeries("PulseWidthModulation", ydata)
 
 	outpath := "output.TestWaveSynthesizers.html"
@@ -87,4 +87,28 @@ func TestWaveSynthesizers(t *testing.T) {
 	defer outfile.Close()
 
 	chart.Render(outfile)
+}
+
+func TestWavePlotter(t *testing.T) {
+	f := 10.
+	a := 2.
+	d := 4.
+	r := int(100 * f) // 100 points by cycle
+
+	p := NewPlotter(r)
+
+	s := NewSineWaveSynthesizer(f, a, r)
+	samples := s.Synthesize(d)
+	p.AddSeries(samples, "Sine")
+
+	s = NewSquareWaveSynthesizer(f, a, r)
+	samples = s.Synthesize(d)
+	p.AddSeries(samples, "Square")
+
+	s = NewKarplusStrongSynthesizer(f, a, r)
+	samples = s.Synthesize(d)
+	p.AddSeries(samples, "KarplusStrong")
+
+	outpath := "output.TestWavePlotter.html"
+	p.Save(outpath)
 }

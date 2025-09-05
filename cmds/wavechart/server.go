@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/gboulant/musicall/wave"
@@ -16,7 +15,8 @@ type dataset struct {
 
 // payload is a local dataset to communicate data between the httpplot
 // function (that start the http server) and the httpserver (that serve
-// the plot html chart)
+// the plot html chart). It is to emulate a post REST function with a dataset in
+// the payload and the plot of the chart as a response
 var payload dataset
 
 // Plot the data using a server configuration (plot into the http writer)
@@ -26,18 +26,11 @@ func httpserver(w http.ResponseWriter, _ *http.Request) {
 	samplerate := payload.samplerate
 	label := payload.label
 
+	p := wave.NewPlotter(samplerate)
+	p.AddSeries(samples, label)
+
 	// Create the plot with rendering into the http writer
-	if err := wave.Plot(w, samples, samplerate, label); err != nil {
+	if err := p.Plot(w); err != nil {
 		fmt.Fprintln(w, err)
 	}
-}
-
-// Plot the data using an http configuration (http server)
-func httpplot(samples []float64, samplerate int) error {
-	payload.samplerate = samplerate
-	payload.samples = samples
-	payload.label = "Signal"
-	http.HandleFunc("/", httpserver)
-	log.Println("Plot server is running on http://localhost:8081")
-	return http.ListenAndServe(":8081", nil)
 }

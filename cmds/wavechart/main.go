@@ -7,31 +7,64 @@ the timeseries of a signal generated using the wave package.
 
 import (
 	"fmt"
-	"os"
+	"log"
+	"net/http"
 
+	"github.com/gboulant/musicall"
 	"github.com/gboulant/musicall/wave"
 )
 
-// Plot the data using a standalone configuration (create a local html file)
-func fileplot(samples []float64, samplerate int) error {
+const defaultExampleName string = "D01"
+
+func init() {
+	musicall.NewExample("D01", "Plot into a HTML file", demo01_appli)
+	musicall.NewExample("D02", "Plot into a web browser", demo02_server)
+}
+
+func demo01_appli() error {
+	a := 2.
+	d := 10. // sec.
+	r := 1000
+	fmin := 1.  // Hz
+	fmax := 10. // Hz
+
+	p := wave.NewPlotter(r)
+
+	s := wave.NewSweepFrequencySynthesizer(fmin, fmax, a, r)
+	samples := s.Synthesize(d)
+	p.AddSeries(samples, "Sweep")
+
+	f := 1.
+	s = wave.NewSquareWaveSynthesizer(f, a, r)
+	samples = s.Synthesize(d)
+	p.AddSeries(samples, "Square")
+
 	outfilepath := "output.wavechart.html"
-	return wave.PlotToFile(outfilepath, samples, samplerate, "Wave Chart")
+	return p.Save(outfilepath)
+}
+
+func demo02_server() error {
+	a := 2.
+	d := 10. // sec.
+	r := 1000
+	fmin := 1.  // Hz
+	fmax := 10. // Hz
+	s := wave.NewSweepFrequencySynthesizer(fmin, fmax, a, r)
+	samples := s.Synthesize(d)
+
+	// Just to emulate a payload
+	payload.samplerate = r
+	payload.samples = samples
+	payload.label = "Sweep"
+
+	httpport := 8081
+	address := fmt.Sprintf(":%d", httpport)
+	http.HandleFunc("/", httpserver)
+	log.Printf("Plot server is running on http://localhost:%d", httpport)
+	return http.ListenAndServe(address, nil)
 }
 
 // ----------------------------------------------------------------
 func main() {
-	var program func(samples []float64, samplerate int) error
-
-	// choose the configuration: 1/ html file, or 2/ http server
-	//program = httpplot
-	program = fileplot
-
-	samplerate := 440
-	//samples, samplerate := d01_KarplusStrong(samplerate)
-	samples := d02_sweepfrequency(samplerate, false)
-
-	if err := program(samples, samplerate); err != nil {
-		fmt.Fprintf(os.Stderr, "error: %s\n", err)
-		os.Exit(1)
-	}
+	musicall.StartExampleApp(defaultExampleName)
 }

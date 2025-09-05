@@ -10,8 +10,8 @@ import (
 	"github.com/go-echarts/go-echarts/v2/types"
 )
 
-// data creates a echart timeseries from a float dataset
-func data(samples []float64, samplerate int) (xdata []float64, ydata []opts.LineData) {
+// chartdata creates a echart timeseries from a float dataset
+func chartdata(samples []float64, samplerate int) (xdata []float64, ydata []opts.LineData) {
 	xdata = make([]float64, len(samples))
 	ydata = make([]opts.LineData, len(samples))
 	for i := range samples {
@@ -21,8 +21,8 @@ func data(samples []float64, samplerate int) (xdata []float64, ydata []opts.Line
 	return xdata, ydata
 }
 
-// line creates a echart line from the specified echart timeseries
-func line(xdata []float64, ydata []opts.LineData, label string) *charts.Line {
+// chartline creates a echart chartline from the specified echart timeseries
+func chartline(xdata []float64, ydata []opts.LineData, label string) *charts.Line {
 
 	// create a new line instance
 	line := charts.NewLine()
@@ -65,23 +65,52 @@ func line(xdata []float64, ydata []opts.LineData, label string) *charts.Line {
 	return line
 }
 
-// Plot draws the samples series into the specified writer. The writer
-// could be an html file writer or an http writer
-func Plot(w io.Writer, samples []float64, samplerate int, label string) error {
-	xdata, ydata := data(samples, samplerate)
-	chart := line(xdata, ydata, label)
-	return chart.Render(w)
+type WavePlotter struct {
+	samplerate int
+	chart      *charts.Line
 }
 
-// PlotToFile execute the Plot function with a writer opened on the
-// specified output file
-func PlotToFile(htmlpath string, samples []float64, samplerate int, label string) error {
-	f, _ := os.Create(htmlpath)
+func NewPlotter(samplerate int) *WavePlotter {
+	return &WavePlotter{samplerate: samplerate}
+}
+
+func (p *WavePlotter) AddSeries(samples []float64, label string) error {
+	xdata, ydata := chartdata(samples, p.samplerate)
+	if p.chart == nil {
+		p.chart = chartline(xdata, ydata, label)
+		return nil
+	}
+	p.chart.AddSeries(label, ydata)
+	return nil
+}
+
+// Plot draws the chart into the specified writer. The writer could be an html
+// file writer or an http writer
+func (p *WavePlotter) Plot(w io.Writer) error {
+	return p.chart.Render(w)
+}
+
+// Save creates an html file that display the chart. Technically speaking, it
+// executes the Plot function with a writer opened on the specified output file.
+func (p *WavePlotter) Save(htmlpath string) error {
+	f, err := os.Create(htmlpath)
+	if err != nil {
+		return err
+	}
 	defer f.Close()
 
-	if err := Plot(f, samples, samplerate, label); err != nil {
+	if err := p.Plot(f); err != nil {
 		return err
 	}
 	log.Printf("Result available in file %s", htmlpath)
 	return nil
+}
+
+// PlotToFile creates a HTML file that displays the chart of the specified
+// sample. It is a short instruction for handling a WavePlotter in the case
+// where you have a single dataset to plot.
+func PlotToFile(htmlpath string, samples []float64, samplerate int, label string) error {
+	p := NewPlotter(samplerate)
+	p.AddSeries(samples, label)
+	return p.Save(htmlpath)
 }
