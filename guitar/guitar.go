@@ -12,7 +12,7 @@ type Guitar struct {
 
 func NewGuitar(sampleRate int) *Guitar {
 	f := 0. // no specific frequency at initialize step
-	a := 1.
+	a := 1. // DO NOT set a>1, it will be truncated by the speaker
 	r := wave.SampleRate(sampleRate)
 	s := wave.NewKarplusStrongSynthesizer(f, a, r)
 	g := Guitar{synthesizer: s}

@@ -96,7 +96,7 @@ func DEMO00_logscale() error {
 func DEMO01_quintes() error {
 
 	f := 440.
-	a := 0.4
+	a := 0.8
 	d := 2.
 
 	// quinte juste (rapport 3/2)
@@ -118,7 +118,7 @@ func DEMO01_quintes() error {
 	// quinte non juste
 	streamers = []beep.Streamer{
 		sinesound(f, a, d),
-		sinesound(3.01*f/2., a, d),
+		sinesound(3.03*f/2., a, d),
 	}
 
 	streamer = beep.Seq(
@@ -135,7 +135,7 @@ func DEMO01_quintes() error {
 // ----------------------------------------------------------------
 func DEMO02_vibrato() error {
 	f := 80.
-	a := 2.
+	a := 1.
 	d := 3.
 	deltaf := 3.
 

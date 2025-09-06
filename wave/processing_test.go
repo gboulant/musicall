@@ -19,8 +19,8 @@ func TestAddNoise(t *testing.T) {
 
 const float64EqualityThreshold = 1e-6
 
-func almostEqual(a, b float64) bool {
-	return math.Abs(a-b) <= float64EqualityThreshold
+func almostEqual(a, b float64, threshold float64) bool {
+	return math.Abs(a-b) <= threshold
 }
 
 func TestDecimate(t *testing.T) {
@@ -61,8 +61,71 @@ func TestDecimate(t *testing.T) {
 		t.Errorf("len is %d (should be %d)", len(s), len(decimate))
 	}
 	for i, v := range decimate {
-		if !almostEqual(v, s[i]) {
+		if !almostEqual(v, s[i], float64EqualityThreshold) {
 			t.Errorf("s[%d] is %.8f (should be %.8f)", i, s[i], v)
 		}
+	}
+}
+
+func TestMinMax(t *testing.T) {
+	f := 120.
+	a := 1.4
+	d := 4.
+	r := DefaultSampleRate
+	samples := SineWaveSignal(f, a, d, r)
+
+	// Add an offset for non trivial min max
+	offset := 2.3
+	for i := range samples {
+		samples[i] = samples[i] + offset
+	}
+
+	resmin, resmax, resmed := MinMax(&samples)
+	expmin := -a + offset
+	expmax := +a + offset
+	expmed := offset
+
+	if !almostEqual(resmin, expmin, 1e-3) {
+		t.Errorf("min is %.2f (should be %.2f)", resmin, expmin)
+	}
+	if !almostEqual(resmax, expmax, 1e-3) {
+		t.Errorf("max is %.2f (should be %.2f)", resmax, expmax)
+	}
+	if !almostEqual(resmed, expmed, 1e-3) {
+		t.Errorf("med is %.2f (should be %.2f)", resmed, expmed)
+	}
+}
+
+func TestRescale(t *testing.T) {
+	f := 5.
+	a := 1.4
+	d := 4.
+	r := int(f * 100) // 100 point by cycle
+	p := NewPlotter(r)
+
+	samples := SineWaveSignal(f, a, d, r)
+
+	// Add an offset for non trivial min max
+	offset := 2.3
+	for i := range samples {
+		samples[i] = samples[i] + offset
+	}
+	p.AddSeries(samples, "origin")
+
+	// Rescale to the range -1, +1
+	min, max, _ := MinMax(&samples)
+	Rescale(&samples, min, max, -1., +1.)
+	p.AddSeries(samples, "rescale")
+	outpath := "output.TestRescale.html"
+	p.Save(outpath)
+
+	resmin, resmax, _ := MinMax(&samples)
+	expmin := -1.
+	expmax := +1.
+	if !almostEqual(resmin, expmin, 1e-3) {
+		t.Errorf("min is %.2f (should be %.2f)", resmin, expmin)
+	}
+	if !almostEqual(resmax, expmax, 1e-3) {
+		t.Errorf("max is %.2f (should be %.2f)", resmax, expmax)
 	}
 }

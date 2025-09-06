@@ -8,6 +8,8 @@ github.com/go-echarts/go-echarts/v2 v2.6.0 h1:4wEquGT/I7lipHnOCh/z3qa8E4dY0SYFdE
 github.com/go-echarts/go-echarts/v2 v2.6.0/go.mod h1:56YlvzhW/a+du15f3S2qUGNDfKnFOeJSThBIrVFHDtI=
 github.com/gopxl/beep v1.4.1 h1:WqNs9RsDAhG9M3khMyc1FaVY50dTdxG/6S6a3qsUHqE=
 github.com/gopxl/beep v1.4.1/go.mod h1:A1dmiUkuY8kxsvcNJNUBIEcchmiP6eUyCHSxpXl0YO0=
+github.com/orcaman/writerseeker v0.0.0-20200621085525-1d3f536ff85e h1:s2RNOM/IGdY0Y6qfTeUKhDawdHDpK9RGBdx80qN4Ttw=
+github.com/orcaman/writerseeker v0.0.0-20200621085525-1d3f536ff85e/go.mod h1:nBdnFKj15wFbf94Rwfq4m30eAcyY9V/IyKAGQFtqkW0=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=

@@ -96,7 +96,7 @@ func TestNote_GammeChromatique(t *testing.T) {
 	newSynthesizer = wave.NewSineWaveSynthesizer
 	newSynthesizer = wave.NewKarplusStrongSynthesizer
 
-	a := 2.
+	a := 1. // DO NOT set a>1, it will be truncated by the speaker
 	r := sampleRate
 	s := newSynthesizer(0., a, r)
 	d := 0.8
