@@ -74,14 +74,13 @@ func NewPlotter(samplerate int) *WavePlotter {
 	return &WavePlotter{samplerate: samplerate}
 }
 
-func (p *WavePlotter) AddSeries(samples []float64, label string) error {
+func (p *WavePlotter) AddSeries(samples []float64, label string) {
 	xdata, ydata := chartdata(samples, p.samplerate)
 	if p.chart == nil {
 		p.chart = chartline(xdata, ydata, label)
-		return nil
+		return
 	}
 	p.chart.AddSeries(label, ydata)
-	return nil
 }
 
 // Plot draws the chart into the specified writer. The writer could be an html
