@@ -10,31 +10,19 @@ import (
 	"github.com/go-echarts/go-echarts/v2/types"
 )
 
-// chartdata creates a echart timeseries from a float dataset
-func chartdata(samples []float64, samplerate int) (xdata []float64, ydata []opts.LineData) {
-	xdata = make([]float64, len(samples))
-	ydata = make([]opts.LineData, len(samples))
-	for i := range samples {
-		xdata[i] = float64(i) / float64(samplerate)
-		ydata[i] = opts.LineData{Value: samples[i]}
-	}
-	return xdata, ydata
+type WavePlotter struct {
+	chart *charts.Line
 }
 
-// chartline creates a echart chartline from the specified echart timeseries
-func chartline(xdata []float64, ydata []opts.LineData, label string) *charts.Line {
-
-	// create a new line instance
-	line := charts.NewLine()
+func applyDefaultOptions(chart *charts.Line) {
 	// set some global options like Title/Legend/ToolTip or anything else
 	var zoomstart float32 = 20. // percentage of the window range
 	var zoomend float32 = 80.   // percentage of the window range
 
-	line.SetGlobalOptions(
+	chart.SetGlobalOptions(
 		charts.WithInitializationOpts(opts.Initialization{Theme: types.ThemeWesteros}),
-		charts.WithTitleOpts(opts.Title{
-			Title:    "MusicHall - Synthetic",
-			Subtitle: "Line chart rendering wave functions",
+		charts.WithXAxisOpts(opts.XAxis{
+			AxisLabel: &opts.AxisLabel{Formatter: "{value}s"},
 		}),
 		charts.WithDataZoomOpts(
 			opts.DataZoom{
@@ -56,31 +44,40 @@ func chartline(xdata []float64, ydata []opts.LineData, label string) *charts.Lin
 		),
 	)
 
-	// Put data into instance
-	line.SetXAxis(xdata)
-	line.AddSeries(label, ydata)
-
 	//smooth := true
-	//line.SetSeriesOptions(charts.WithLineChartOpts(opts.LineChart{Smooth: &smooth}))
-	return line
+	//p.chart.SetSeriesOptions(charts.WithLineChartOpts(opts.LineChart{Smooth: &smooth}))
 }
 
-type WavePlotter struct {
-	samplerate int
-	chart      *charts.Line
+func NewPlotter() *WavePlotter {
+	chart := charts.NewLine()
+	applyDefaultOptions(chart)
+	return &WavePlotter{chart: chart}
 }
 
-func NewPlotter(samplerate int) *WavePlotter {
-	return &WavePlotter{samplerate: samplerate}
+func (p *WavePlotter) SetTitle(title string) {
+	p.chart.SetGlobalOptions(
+		charts.WithTitleOpts(opts.Title{
+			Title: title,
+		}),
+	)
 }
 
-func (p *WavePlotter) AddSeries(samples []float64, label string) {
-	xdata, ydata := chartdata(samples, p.samplerate)
-	if p.chart == nil {
-		p.chart = chartline(xdata, ydata, label)
-		return
+func (p *WavePlotter) AddLineTimedValues(samples, times []float64, label string) {
+	data := make([]opts.LineData, len(samples))
+	for i := range samples {
+		data[i] = opts.LineData{Value: []float64{times[i], samples[i]}, Symbol: "none"}
 	}
-	p.chart.AddSeries(label, ydata)
+	p.chart.AddSeries(label, data)
+}
+
+func (p *WavePlotter) AddLineSampledValues(samples []float64, samplerate int, label string) {
+	data := make([]opts.LineData, len(samples))
+	var timestamp float64
+	for i := range samples {
+		timestamp = float64(i) / float64(samplerate)
+		data[i] = opts.LineData{Value: []float64{timestamp, samples[i]}, Symbol: "none"}
+	}
+	p.chart.AddSeries(label, data)
 }
 
 // Plot draws the chart into the specified writer. The writer could be an html
@@ -109,7 +106,7 @@ func (p *WavePlotter) Save(htmlpath string) error {
 // sample. It is a short instruction for handling a WavePlotter in the case
 // where you have a single dataset to plot.
 func PlotToFile(htmlpath string, samples []float64, samplerate int, label string) error {
-	p := NewPlotter(samplerate)
-	p.AddSeries(samples, label)
+	p := NewPlotter()
+	p.AddLineSampledValues(samples, samplerate, label)
 	return p.Save(htmlpath)
 }

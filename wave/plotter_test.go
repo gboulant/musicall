@@ -1,7 +1,6 @@
 package wave
 
 import (
-	"os"
 	"testing"
 )
 
@@ -46,68 +45,39 @@ func TestPlotToFile(t *testing.T) {
 	}
 }
 
-func TestWaveSynthesizers(t *testing.T) {
-	f := 10.
-	a := 2.
-	d := 4.
-	r := int(100 * f) // 100 points by cycle
-
-	s := NewSineWaveSynthesizer(f, a, r)
-	samples := s.Synthesize(d)
-	xdata, ydata := chartdata(samples, r)
-	chart := chartline(xdata, ydata, "Sine")
-
-	s = NewSquareWaveSynthesizer(f, a, r)
-	samples = s.Synthesize(d)
-	_, ydata = chartdata(samples, r)
-	chart.AddSeries("Square", ydata)
-
-	s = NewKarplusStrongSynthesizer(f, a, r)
-	samples = s.Synthesize(d)
-	_, ydata = chartdata(samples, r)
-	chart.AddSeries("KarplusStrong", ydata)
-
-	s = NewTriangleWaveSynthesizer(f, a, r, 0.5)
-	samples = s.Synthesize(d)
-	_, ydata = chartdata(samples, r)
-	chart.AddSeries("Triangle", ydata)
-
-	s = NewSawtoothWaveSynthesizer(f, a, r)
-	samples = s.Synthesize(d)
-	_, ydata = chartdata(samples, r)
-	chart.AddSeries("SawTooth", ydata)
-
-	s = NewPWMWaveSynthesizer(f, a, r, 0.2)
-	samples = s.Synthesize(d)
-	_, ydata = chartdata(samples, r)
-	chart.AddSeries("PulseWidthModulation", ydata)
-
-	outpath := "output.TestWaveSynthesizers.html"
-	outfile, _ := os.Create(outpath)
-	defer outfile.Close()
-
-	chart.Render(outfile)
-}
-
 func TestWavePlotter(t *testing.T) {
 	f := 10.
 	a := 2.
 	d := 4.
 	r := int(100 * f) // 100 points by cycle
 
-	p := NewPlotter(r)
+	p := NewPlotter()
+	p.SetTitle("Different Wave Forms")
 
 	s := NewSineWaveSynthesizer(f, a, r)
 	samples := s.Synthesize(d)
-	p.AddSeries(samples, "Sine")
+	p.AddLineSampledValues(samples, r, "Sine")
 
 	s = NewSquareWaveSynthesizer(f, a, r)
 	samples = s.Synthesize(d)
-	p.AddSeries(samples, "Square")
+	p.AddLineSampledValues(samples, r, "Square")
 
 	s = NewKarplusStrongSynthesizer(f, a, r)
 	samples = s.Synthesize(d)
-	p.AddSeries(samples, "KarplusStrong")
+	p.AddLineSampledValues(samples, r, "KarplusStrong")
+
+	// ERROR: problème de pente avec le triangle
+	s = NewTriangleWaveSynthesizer(f, a, r, 0.5)
+	samples = s.Synthesize(d)
+	p.AddLineSampledValues(samples, r, "Triangle")
+
+	s = NewSawtoothWaveSynthesizer(f, a, r)
+	samples = s.Synthesize(d)
+	p.AddLineSampledValues(samples, r, "SawTooth")
+
+	s = NewPWMWaveSynthesizer(f, a, r, 0.2)
+	samples = s.Synthesize(d)
+	p.AddLineSampledValues(samples, r, "PulseWidthModulation")
 
 	outpath := "output.TestWavePlotter.html"
 	p.Save(outpath)

@@ -28,16 +28,16 @@ func demo01_appli() error {
 	fmin := 1.  // Hz
 	fmax := 10. // Hz
 
-	p := wave.NewPlotter(r)
+	p := wave.NewPlotter()
 
 	s := wave.NewSweepFrequencySynthesizer(fmin, fmax, a, r)
 	samples := s.Synthesize(d)
-	p.AddSeries(samples, "Sweep")
+	p.AddLineSampledValues(samples, r, "Sweep")
 
 	f := 1.
 	s = wave.NewSquareWaveSynthesizer(f, a, r)
 	samples = s.Synthesize(d)
-	p.AddSeries(samples, "Square")
+	p.AddLineSampledValues(samples, r, "Square")
 
 	outfilepath := "output.wavechart.html"
 	return p.Save(outfilepath)

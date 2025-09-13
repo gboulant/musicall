@@ -26,8 +26,8 @@ func httpserver(w http.ResponseWriter, _ *http.Request) {
 	samplerate := payload.samplerate
 	label := payload.label
 
-	p := wave.NewPlotter(samplerate)
-	p.AddSeries(samples, label)
+	p := wave.NewPlotter()
+	p.AddLineSampledValues(samples, samplerate, label)
 
 	// Create the plot with rendering into the http writer
 	if err := p.Plot(w); err != nil {

@@ -101,7 +101,7 @@ func TestRescale(t *testing.T) {
 	a := 1.4
 	d := 4.
 	r := int(f * 100) // 100 point by cycle
-	p := NewPlotter(r)
+	p := NewPlotter()
 
 	samples := SineWaveSignal(f, a, d, r)
 
@@ -110,12 +110,12 @@ func TestRescale(t *testing.T) {
 	for i := range samples {
 		samples[i] = samples[i] + offset
 	}
-	p.AddSeries(samples, "origin")
+	p.AddLineSampledValues(samples, r, "origin")
 
 	// Rescale to the range -1, +1
 	min, max, _ := MinMax(&samples)
 	Rescale(&samples, min, max, -1., +1.)
-	p.AddSeries(samples, "rescale")
+	p.AddLineSampledValues(samples, r, "rescale")
 	outpath := "output.TestRescale.html"
 	p.Save(outpath)
 
