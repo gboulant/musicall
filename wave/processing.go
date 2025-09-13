@@ -2,6 +2,7 @@ package wave
 
 import (
 	"math"
+	"math/cmplx"
 	"math/rand/v2"
 )
 
@@ -65,4 +66,41 @@ func Rescale(samples *[]float64, inmin, inmax float64, outmin, outmax float64) (
 		(*samples)[i] = a*(*samples)[i] + b
 	}
 	return a, b
+}
+
+// Normalize rescales the signal in a range -1, +1
+func Normalize(samples *[]float64) (a, b float64) {
+	min, max, _ := MinMax(samples)
+	return Rescale(samples, min, max, -1., +1.)
+}
+
+// Times returns a set of timestamps in second, considering a series of the
+// specified size (total number of points) sampled to the specified sample rate,
+// and starting at t0 (in seconds). If d is the duration in seconds, then the
+// size is d*samplerate. If you have a dataset of values (samples) then the size
+// is the number of points of this dataset (len(samples))
+func Times(size int, samplerate int, t0 float64) []float64 {
+	times := make([]float64, size)
+	for i := range size {
+		times[i] = t0 + float64(i)/float64(samplerate)
+	}
+	return times
+}
+
+func fft(a []complex128, n, s int) []complex128 {
+	if n == 1 {
+		return []complex128{a[0]}
+	}
+	exp := cmplx.Rect(1, -2*math.Pi/float64(n))
+	wn := complex(1, 0)
+	a0 := fft(a, n/2, 2*s)
+	a1 := fft(a[s:], n/2, 2*s)
+	y := make([]complex128, n)
+	for i, _ := range y {
+		if i >= n/2 {
+			wn = wn * exp
+		}
+		y[i] = a0[i%(n/2)] + wn*a1[i%(n/2)]
+	}
+	return y
 }

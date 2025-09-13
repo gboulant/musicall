@@ -1,6 +1,7 @@
 package wave
 
 import (
+	"fmt"
 	"log"
 	"math"
 	"testing"
@@ -128,4 +129,9 @@ func TestRescale(t *testing.T) {
 	if !almostEqual(resmax, expmax, 1e-3) {
 		t.Errorf("max is %.2f (should be %.2f)", resmax, expmax)
 	}
+}
+
+func TestFFT(t *testing.T) {
+	a := []complex128{1, 1, 1, 1, 0, 0, 0, 0}
+	fmt.Println(fft(a, len(a), 1))
 }

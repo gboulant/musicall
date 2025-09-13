@@ -11,12 +11,12 @@ func d01_KarplusStrong(r int) []float64 {
 	return KarplusStrongSignal(f, a, d, r)
 }
 
-func d02_sweepfrequency(r int, reverse bool) []float64 {
+func d02_sweepfrequency(r int) []float64 {
 	a := 2.
 	d := 10.   // sec.
 	fmin := 1. // Hz
 	fmax := 5. // Hz
-	return SweepFrequencySignal(fmin, fmax, a, d, reverse, r)
+	return SweepFrequencySignal(fmin, fmax, a, d, r)
 }
 
 func decimate(samples []float64, samplerate int, step int) ([]float64, int) {
@@ -37,7 +37,7 @@ func TestPlotToFile(t *testing.T) {
 		t.Error(err)
 	}
 
-	samples = d02_sweepfrequency(samplerate, false)
+	samples = d02_sweepfrequency(samplerate)
 	outfilepath = "output.d02_sweepfrequency.html"
 	pltsamples, pltsamplerate = decimate(samples, samplerate, decimatestep)
 	if err := PlotToFile(outfilepath, pltsamples, pltsamplerate, "sweepfrequency"); err != nil {
@@ -46,15 +46,16 @@ func TestPlotToFile(t *testing.T) {
 }
 
 func TestWavePlotter(t *testing.T) {
-	f := 10.
+	f := 3.
 	a := 2.
 	d := 4.
 	r := int(100 * f) // 100 points by cycle
 
 	p := NewPlotter()
-	p.SetTitle("Different Wave Forms")
+	//p.SetTitle("Different Wave Forms")
 
-	s := NewSineWaveSynthesizer(f, a, r)
+	var s Synthesizer
+	s = NewSineWaveSynthesizer(f, a, r)
 	samples := s.Synthesize(d)
 	p.AddLineSampledValues(samples, r, "Sine")
 
@@ -78,6 +79,10 @@ func TestWavePlotter(t *testing.T) {
 	s = NewPWMWaveSynthesizer(f, a, r, 0.2)
 	samples = s.Synthesize(d)
 	p.AddLineSampledValues(samples, r, "PulseWidthModulation")
+
+	s = NewSweepFrequencySynthesizer(f, 2*f, a, r)
+	samples = s.Synthesize(d)
+	p.AddLineSampledValues(samples, r, "SweepFrequencySynthesizer")
 
 	outpath := "output.TestWavePlotter.html"
 	p.Save(outpath)
