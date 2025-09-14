@@ -11,6 +11,7 @@ func init() {
 	musicall.NewExample("D03", "modulation d'amplitude", DEMO03_amplitude_modulation)
 	musicall.NewExample("D04", "modulation de fréquence", DEMO04_frequency_modulation)
 	musicall.NewExample("D05", "sounds like a laser", DEMO05_sounds_like_a_laser)
+	musicall.NewExample("D06", "echelle musicale", DEMO06_musicalscale)
 }
 
 func main() {

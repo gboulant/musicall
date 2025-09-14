@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"slices"
 	"time"
 
 	"github.com/gboulant/musicall/sound"
@@ -291,6 +292,64 @@ func DEMO05_sounds_like_a_laser() error {
 
 	if err := sound.Play(sound.NewSound(samples)); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func almostEqual(x, y float64, accuracy float64) bool {
+	return math.Abs(x-y) < accuracy
+}
+
+func DEMO06_musicalscale() error {
+	f0 := 440.   // Hz
+	f1 := 2 * f0 // octave
+
+	//accuracy := 1e-1 // 666 values
+	accuracy := 1.0 // 666 values
+
+	// near return the index of the values array containing a value near
+	// the specified value with a distance less than 1e-2. Return -1 if
+	// no element found at this distance
+	near := func(value float64, values *[]float64) int {
+		for i := range len(*values) {
+			if almostEqual((*values)[i], value, accuracy) {
+				return i
+			}
+		}
+		return -1
+	}
+	quinte := func(f float64) float64 {
+		return 3 * f / 2
+	}
+
+	values := make([]float64, 0)
+	values = append(values, f0, f1)
+
+	f := f0
+	ended := false
+	for !ended {
+		f = quinte(f)
+		if f > f1 {
+			// We normalize the value (by dividing by 2) to stay in the
+			// octave f0-2f0.
+			f = f / 2.
+		}
+		if i := near(f, &values); i != -1 {
+			ended = true
+		} else {
+			values = append(values, f)
+		}
+	}
+	slices.Sort(values)
+	for _, f := range values {
+		fmt.Printf("f=%.2f\n", f)
+	}
+	fmt.Printf("size = %d\n", len(values))
+
+	for i := 0; i < len(values)-1; i++ {
+		r := values[i+1] / values[i]
+		fmt.Printf("r=%.6f\n", r)
 	}
 
 	return nil
