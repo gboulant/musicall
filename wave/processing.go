@@ -2,7 +2,6 @@ package wave
 
 import (
 	"math"
-	"math/cmplx"
 	"math/rand/v2"
 )
 
@@ -85,22 +84,4 @@ func Times(size int, samplerate int, t0 float64) []float64 {
 		times[i] = t0 + float64(i)/float64(samplerate)
 	}
 	return times
-}
-
-func fft(a []complex128, n, s int) []complex128 {
-	if n == 1 {
-		return []complex128{a[0]}
-	}
-	exp := cmplx.Rect(1, -2*math.Pi/float64(n))
-	wn := complex(1, 0)
-	a0 := fft(a, n/2, 2*s)
-	a1 := fft(a[s:], n/2, 2*s)
-	y := make([]complex128, n)
-	for i, _ := range y {
-		if i >= n/2 {
-			wn = wn * exp
-		}
-		y[i] = a0[i%(n/2)] + wn*a1[i%(n/2)]
-	}
-	return y
 }
