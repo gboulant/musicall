@@ -217,11 +217,15 @@ func (s triangleWaveSynthesizer) Synthesize(duration float64) []float64 {
 	for i := range samples {
 		samples[i] = value
 		value += step
-		if value > s.amplitude || i%int(samples_by_period) >= int(riseslope_samples) {
+		if value > s.amplitude {
 			value = s.amplitude
 			step = downslope_step
 		} else if value < -s.amplitude {
 			value = -s.amplitude
+			step = riseslope_step
+		} else if i%int(samples_by_period) >= int(riseslope_samples) {
+			step = downslope_step
+		} else {
 			step = riseslope_step
 		}
 	}

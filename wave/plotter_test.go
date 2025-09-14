@@ -1,6 +1,7 @@
 package wave
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -67,8 +68,7 @@ func TestWavePlotter(t *testing.T) {
 	samples = s.Synthesize(d)
 	p.AddLineSampledValues(samples, r, "KarplusStrong")
 
-	// ERROR: problème de pente avec le triangle
-	s = NewTriangleWaveSynthesizer(f, a, r, 0.5)
+	s = NewTriangleWaveSynthesizer(f, a, r, 0.7)
 	samples = s.Synthesize(d)
 	p.AddLineSampledValues(samples, r, "Triangle")
 
@@ -85,5 +85,44 @@ func TestWavePlotter(t *testing.T) {
 	p.AddLineSampledValues(samples, r, "SweepFrequencySynthesizer")
 
 	outpath := "output.TestWavePlotter.html"
+	p.Save(outpath)
+}
+
+func TestTriangleWave(t *testing.T) {
+	f := 1.
+	a := 1.
+	d := 1.
+	n := 1000                // number of point in one f cycle
+	r := int(float64(n) * f) // sample rate
+
+	p := NewPlotter()
+
+	var s Synthesizer
+	var samples []float64
+
+	s = NewSquareWaveSynthesizer(f, a, r)
+	samples = s.Synthesize(d)
+	p.AddLineSampledValues(samples, r, "Square")
+
+	var risingrate float64
+	var label string
+	for i := range 10 {
+		risingrate = float64(i) / 10
+		s = NewTriangleWaveSynthesizer(f, a, r, risingrate)
+		samples = s.Synthesize(d)
+		label = fmt.Sprintf("Triangle %.2f", risingrate)
+		p.AddLineSampledValues(samples, r, label)
+	}
+
+	/*
+		s = NewSawtoothWaveSynthesizer(f, a, r)
+		samples = s.Synthesize(d)
+		p.AddLineSampledValues(samples, r, "SawTooth")
+
+		s = NewRegularTriangleWaveSynthesizer(f, a, r)
+		samples = s.Synthesize(d)
+		p.AddLineSampledValues(samples, r, "Regular")
+	*/
+	outpath := "output.TestTriangleWave.html"
 	p.Save(outpath)
 }

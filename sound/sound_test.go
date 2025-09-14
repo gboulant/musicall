@@ -273,3 +273,43 @@ func TestVolumeStreamerAsync(t *testing.T) {
 
 	time.Sleep(time.Duration(1 * time.Second))
 }
+
+func TestSaturation(t *testing.T) {
+	f := 440.
+	a := 1.
+	d := 1.
+
+	// ---------------------------------------------------
+	// Saturation test using sine. We observe that the sound becomes a square sound
+	sound1 := NewSound(wave.SineWaveSignal(f, a, d, 0))
+	sound2 := NewSound(wave.SineWaveSignal(f, 2*a, d, 0))
+	sound3 := NewSound(wave.SineWaveSignal(f, 4*a, d, 0))
+
+	streamers := []beep.Streamer{
+		silence(0.2), sound1,
+		silence(0.2), sound2,
+		silence(0.2), sound3,
+	}
+
+	streamer := beep.Seq(streamers...)
+	if err := Play(streamer); err != nil {
+		t.Error(err)
+	}
+
+	// ---------------------------------------------------
+	// Saturation test using KS/ It seems we can reproduce the sound of a
+	// sur-saturated / distorsion guitar
+	sound1 = NewSound(wave.KarplusStrongSignal(f, a, d, 0))
+	sound2 = NewSound(wave.KarplusStrongSignal(f, 4*a, d, 0))
+	sound3 = NewSound(wave.KarplusStrongSignal(f, 28*a, 4*d, 0))
+	streamers = []beep.Streamer{
+		silence(0.2), sound1,
+		silence(0.2), sound2,
+		silence(0.2), sound3,
+	}
+
+	streamer = beep.Seq(streamers...)
+	if err := Play(streamer); err != nil {
+		t.Error(err)
+	}
+}

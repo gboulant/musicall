@@ -33,5 +33,4 @@ func TestNewSweepFrequencySynthesizer(t *testing.T) {
 	if reslen != explen {
 		t.Errorf("len is %d (should be %d)", reslen, explen)
 	}
-
 }
