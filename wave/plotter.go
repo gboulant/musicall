@@ -16,8 +16,8 @@ type WavePlotter struct {
 
 func applyDefaultOptions(chart *charts.Line) {
 	// set some global options like Title/Legend/ToolTip or anything else
-	var zoomstart float32 = 20. // percentage of the window range
-	var zoomend float32 = 80.   // percentage of the window range
+	var zoomstart float32 = 0. // percentage of the window range
+	var zoomend float32 = 100. // percentage of the window range
 
 	chart.SetGlobalOptions(
 		charts.WithInitializationOpts(opts.Initialization{Theme: types.ThemeWesteros}),
@@ -44,14 +44,24 @@ func applyDefaultOptions(chart *charts.Line) {
 		),
 	)
 
-	//smooth := true
-	//p.chart.SetSeriesOptions(charts.WithLineChartOpts(opts.LineChart{Smooth: &smooth}))
+	smooth := true
+	chart.SetSeriesOptions(charts.WithLineChartOpts(opts.LineChart{
+		Smooth: &smooth,
+	}))
 }
 
 func NewPlotter() *WavePlotter {
 	chart := charts.NewLine()
 	applyDefaultOptions(chart)
 	return &WavePlotter{chart: chart}
+}
+
+func (p *WavePlotter) SetXFormatter(formatter string) {
+	p.chart.SetGlobalOptions(
+		charts.WithXAxisOpts(opts.XAxis{
+			AxisLabel: &opts.AxisLabel{Formatter: types.FuncStr(formatter)},
+		}),
+	)
 }
 
 func (p *WavePlotter) SetTitle(title string) {
@@ -62,12 +72,16 @@ func (p *WavePlotter) SetTitle(title string) {
 	)
 }
 
-func (p *WavePlotter) AddLineTimedValues(samples, times []float64, label string) {
-	data := make([]opts.LineData, len(samples))
-	for i := range samples {
-		data[i] = opts.LineData{Value: []float64{times[i], samples[i]}, Symbol: "none"}
+func (p *WavePlotter) AddLineXYValues(x, y []float64, label string) {
+	data := make([]opts.LineData, len(y))
+	for i := range y {
+		data[i] = opts.LineData{Value: []float64{x[i], y[i]}, Symbol: "none"}
 	}
 	p.chart.AddSeries(label, data)
+}
+
+func (p *WavePlotter) AddLineTimedValues(samples, times []float64, label string) {
+	p.AddLineXYValues(times, samples, label)
 }
 
 func (p *WavePlotter) AddLineSampledValues(samples []float64, samplerate int, label string) {
