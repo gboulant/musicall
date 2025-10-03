@@ -4,6 +4,7 @@ package wave
 // i.e. the composition of the timeseries in terms of frequencies and
 // their proportions (amplitudes). The API (and part of the
 // implementation) is inspired from the Python scipy.fft package.
+// examples from github.com/xigh/spectrogram.git
 
 import (
 	"math"
