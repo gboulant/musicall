@@ -7,8 +7,8 @@ import (
 )
 
 func program() error {
-	//phrase := "Salut Martin, le petit lapin"
-	phrase := "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz"
+	phrase := "Salut Martin, le petit lapin"
+	//phrase := "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz"
 	//phrase := "Martin Guillaume Anne-Laure Gaelle Lucie"
 	streamer := string2streamer(phrase)
 	//save(streamer, format(defaultSampleRate), "output.wav")
