@@ -12,6 +12,8 @@ func init() {
 	applet.NewExample("D04", "modulation de fréquence", DEMO04_frequency_modulation)
 	applet.NewExample("D05", "sounds like a laser", DEMO05_sounds_like_a_laser)
 	applet.NewExample("D06", "echelle musicale", DEMO06_musicalscale)
+	applet.NewExample("D07", "filtre sigmoide", DEMO07_sigmoidfilter)
+	applet.NewExample("D08", "sequence de signaux adoucis", DEMO08_sequence_smoot_signal)
 }
 
 func main() {

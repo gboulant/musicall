@@ -354,3 +354,73 @@ func DEMO06_musicalscale() error {
 
 	return nil
 }
+
+func DEMO07_sigmoidfilter() error {
+	f := 180.
+	a := 1.
+	d := 4.
+	r := wave.DefaultSampleRate
+	p := wave.NewPlotter()
+
+	streamers := make([]beep.Streamer, 0)
+
+	samples := wave.SineWaveSignal(f, a, d, r)
+	p.AddLineSampledValues(samples, r, "origin")
+	streamers = append(streamers, sound.NewSound(samples))
+	streamers = append(streamers, silence(0.5))
+
+	// We apply a smooth boundaries filter (that consists in a rising up
+	// sigmoid filter at the begining of the signal, combined with a
+	// rising down filter at the end of the signal). The smoothtime is
+	// the time for the signal to rise from 10% to 90% of the maximum
+	// amplitude. First make a copy to be able to play the sound of the
+	// original samples dataset.
+	filtered := make([]float64, len(samples))
+	copy(filtered, samples)
+	smoothtime := 40. / f // fondu sur n cycles
+	wave.SmoothBoundaries(&filtered, r, smoothtime)
+	p.AddLineSampledValues(filtered, r, "smooth")
+	streamers = append(streamers, sound.NewSound(filtered))
+
+	outpath := "output.DEMO07_sigmoidfilter.html"
+	p.Save(outpath)
+
+	streamer := beep.Seq(streamers...)
+	if err := sound.Play(streamer); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func DEMO08_sequence_smoot_signal() error {
+	f := 180.
+	a := 1.
+	d := 2.
+	r := wave.DefaultSampleRate
+
+	streamers := make([]beep.Streamer, 0)
+	streamers = append(streamers, silence(0.5))
+
+	smoothtime := 20. / f // fondu sur n cycles
+
+	samples := wave.SineWaveSignal(f, a, d, r)
+	wave.SmoothBoundaries(&samples, r, smoothtime)
+	streamers = append(streamers, sound.NewSound(samples))
+
+	f = 4 * f / 3
+	samples = wave.SineWaveSignal(f, a, d, r)
+	wave.SmoothBoundaries(&samples, r, smoothtime)
+	streamers = append(streamers, sound.NewSound(samples))
+
+	f = 4 * f / 3
+	samples = wave.SineWaveSignal(f, a, d, r)
+	wave.SmoothBoundaries(&samples, r, smoothtime)
+	streamers = append(streamers, sound.NewSound(samples))
+
+	streamer := beep.Seq(streamers...)
+	if err := sound.Play(streamer); err != nil {
+		return err
+	}
+	return nil
+}

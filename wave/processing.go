@@ -85,3 +85,57 @@ func Times(size int, samplerate int, t0 float64) []float64 {
 	}
 	return times
 }
+
+type FilterFunc func(t float64) float64
+
+func NewSigmoidFilter(origin float64, lambda float64) FilterFunc {
+	return func(x float64) float64 {
+		return 1. / (1. + math.Exp(-lambda*(x-origin)))
+	}
+}
+
+// NewSigmoidFilterByRisingTime returns a sigmoid function whose
+// parameter lambda is adjusted so that the rising time is equal to the
+// specified input value risingtime. The rising time is the time to rise
+// from 10% of the maximum to 90% of the maximum, i.e. from 0.1 to 0.9.
+//
+// On peut démontrer que pour avoir une montée de la sigmoide de la
+// valeur alpha à la valeur 1-alpha (où 0 < alpha < 0.5) sur une
+// longeur d'abscice D (ici une durée qui caractérise le temps de
+// montée), alors le paramètre lambda doit être égale à:
+//
+// lambda = (2/D) * ln((1-alpha)/alpha)
+//
+// Par exemple, si on souhaite une montée caractéristique entre 0.1
+// (alpha=10% du maximum) et 0.9 (90% du maximum) qui dure le temps
+// D, alors on doit fixer le paramètre lambda à:
+//
+// lambda = (2/D) * ln(9)
+//
+// Dans cette fonction, le paramètre risingtime correspond au temps
+// D pour alpha = 0.1, c'est-à-dire que c'est le temps de montée de
+// 10 à 90%.
+func NewSigmoidFilterByRisingTime(origin float64, risingtime float64) FilterFunc {
+	lambda := math.Log(9.) * 2. / risingtime
+	return NewSigmoidFilter(origin, lambda)
+}
+
+func ApplyTimeFilter(samples *[]float64, samplerate int, filter FilterFunc) {
+	for i := 0; i < len(*samples); i += 1 {
+		t := float64(i) / float64(samplerate)
+		(*samples)[i] = (*samples)[i] * filter(t)
+	}
+}
+
+func SmoothBoundaries(samples *[]float64, samplerate int, smoothtime float64) {
+	origin := smoothtime
+	risingtime := smoothtime
+	filter := NewSigmoidFilterByRisingTime(origin, risingtime)
+	ApplyTimeFilter(samples, samplerate, filter)
+
+	duration := float64(len(*samples)) / float64(samplerate)
+	origin = duration - smoothtime
+	risingtime = -smoothtime
+	filter = NewSigmoidFilterByRisingTime(origin, risingtime)
+	ApplyTimeFilter(samples, samplerate, filter)
+}

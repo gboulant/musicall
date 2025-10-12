@@ -1,8 +1,8 @@
 # MusicAll - Create synthetic sounds with go
 
-This project is a tutorial framework to illustrates some basic elements
-of the music theory. Basic knowledge of what is a sound wave can be
-required (amplitude, frequency, timbre).
+This project is a tutorial framework that illustrates some basic
+elements of the music theory. Basic knowledge of what is a sound wave
+can be required (amplitude, frequency, timbre).
 
 **contact**: [Guillaume Boulant](mailto:gboulant@gmail.com?subject=musicall)
 
