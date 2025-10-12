@@ -10,15 +10,15 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gboulant/musicall"
+	applet "github.com/gboulant/dingo-applet"
 	"github.com/gboulant/musicall/wave"
 )
 
 const defaultExampleName string = "D01"
 
 func init() {
-	musicall.NewExample("D01", "Plot into a HTML file", demo01_appli)
-	musicall.NewExample("D02", "Plot into a web browser", demo02_server)
+	applet.NewExample("D01", "Plot into a HTML file", demo01_appli)
+	applet.NewExample("D02", "Plot into a web browser", demo02_server)
 }
 
 func demo01_appli() error {
@@ -66,5 +66,5 @@ func demo02_server() error {
 
 // ----------------------------------------------------------------
 func main() {
-	musicall.StartExampleApp(defaultExampleName)
+	applet.StartExampleApp(defaultExampleName)
 }
