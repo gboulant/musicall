@@ -4,8 +4,8 @@ github.com/ebitengine/oto/v3 v3.1.0 h1:9tChG6rizyeR2w3vsygTTTVVJ9QMMyu00m2yBOCch
 github.com/ebitengine/oto/v3 v3.1.0/go.mod h1:IK1QTnlfZK2GIB6ziyECm433hAdTaPpOsGMLhEyEGTg=
 github.com/ebitengine/purego v0.7.1 h1:6/55d26lG3o9VCZX8lping+bZcmShseiqlh2bnUDiPA=
 github.com/ebitengine/purego v0.7.1/go.mod h1:ah1In8AOtksoNK6yk5z1HTJeUkC1Ez4Wk2idgGslMwQ=
-github.com/gboulant/dingo-applet v0.0.0-20251012094626-b6f460eedcdb h1:g/fhJI70G2JPwKWN5Tq+P40XOgbj4/dpp7bu99I6SS4=
-github.com/gboulant/dingo-applet v0.0.0-20251012094626-b6f460eedcdb/go.mod h1:qEVnDrkzIlPetnKzsFsWwIKPNjigsIxc+Rwxtqb8+RU=
+github.com/gboulant/dingo-applet v0.0.0-20251018133234-350a84a6a000 h1:Mfrd2evxuMxLsl3AChDWBwm9dLR25tL7EauXmS4kezk=
+github.com/gboulant/dingo-applet v0.0.0-20251018133234-350a84a6a000/go.mod h1:UWnRhcjGoycDs+fg8O25iT+RAXdOBMaY1iKY0da6wxY=
 github.com/go-echarts/go-echarts/v2 v2.6.0 h1:4wEquGT/I7lipHnOCh/z3qa8E4dY0SYFdEEnaTzzzvU=
 github.com/go-echarts/go-echarts/v2 v2.6.0/go.mod h1:56YlvzhW/a+du15f3S2qUGNDfKnFOeJSThBIrVFHDtI=
 github.com/gopxl/beep v1.4.1 h1:WqNs9RsDAhG9M3khMyc1FaVY50dTdxG/6S6a3qsUHqE=

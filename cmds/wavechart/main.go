@@ -17,8 +17,8 @@ import (
 const defaultExampleName string = "D01"
 
 func init() {
-	applet.NewExample("D01", "Plot into a HTML file", demo01_appli)
-	applet.NewExample("D02", "Plot into a web browser", demo02_server)
+	applet.AddApplet("D01", "Plot into a HTML file", demo01_appli)
+	applet.AddApplet("D02", "Plot into a web browser", demo02_server)
 }
 
 func demo01_appli() error {
@@ -66,5 +66,5 @@ func demo02_server() error {
 
 // ----------------------------------------------------------------
 func main() {
-	applet.StartExampleApp(defaultExampleName)
+	applet.StartApplication(defaultExampleName)
 }
