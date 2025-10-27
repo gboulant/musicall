@@ -34,6 +34,25 @@ Even if it is a tutorial project, the packages may be used in other
 applications for other purposes (at least drawing wave forms, making
 sounds, or playing music, with or without a guitar). Let me know.
 
+## Software Requirements
+
+Of course go (above 1.18 is enough), and a small set of additionnal go
+modules (see [go.mod](go.mod). Note especially the
+[go-echarts](https://github.com/go-echarts/go-echarts) module for
+plotting charts, and the [gopxl/beep](https://github.com/gopxl/beep)
+module for playing sound. This last module depends on the ebitengine
+module that requires third party softwares:
+
+```shell
+sudo apt install pkg-config libasound2-dev
+```
+
+Then install the required go modules:
+
+```shell
+go mod tidy
+```
+
 ## Quick start guide
 
 A good way to start with this project is to play with the executable
