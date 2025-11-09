@@ -1,6 +1,7 @@
 package music
 
 import (
+	"fmt"
 	"math"
 
 	"github.com/gboulant/musicall"
@@ -43,6 +44,8 @@ func Label2Index(label string) NoteIndex {
 var label2Index map[string]NoteIndex = map[string]NoteIndex{
 	"Do":   0,
 	"Do#":  1,
+	"Ré":   2,
+	"Ré#":  3,
 	"Re":   2,
 	"Re#":  3,
 	"Mi":   4,
@@ -87,4 +90,15 @@ func (n Note) Frequency() float64 {
 	interval := La3.IntervalTo(n)
 	logF := logFrequencyLa3 + float64(interval)/float64(Octave)
 	return math.Pow(2, logF)
+}
+
+func (n Note) Name() string {
+	var nlabel string
+	for label, index := range label2Index {
+		if index == n.Index {
+			nlabel = label
+			break
+		}
+	}
+	return fmt.Sprintf("%s%d", nlabel, n.Octave)
 }

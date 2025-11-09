@@ -59,14 +59,24 @@ type Note struct {
 	FretNum   FretNumber
 }
 
-// Frequency return the major frequency of the sound corresponding to
-// this note. This frequency can be used in a synthesiser for generating
-// the sound signal.
-func (n Note) Frequency() float64 {
+// MusicNote returns the music note corresponding to this guitar note. A music
+// note is defined in terms of an octave number and an index in this octave.
+func (n Note) MusicNote() music.Note {
 	// 1. On récupère la note de la corde à vide
 	note := noteOfOpenString(n.StringNum)
 	// 2. On ajoute l'intervalle de la frette (nb de demi-tons)
 	note.Add(music.Interval(n.FretNum))
-	// 3. On calcul la fréquence
-	return note.Frequency()
+	return note
+}
+
+// Frequency return the major frequency of the sound corresponding to
+// this note. This frequency can be used in a synthesiser for generating
+// the sound signal.
+func (n Note) Frequency() float64 {
+	return n.MusicNote().Frequency()
+}
+
+// Name return the name of this note (Do, Ré, Mi, etc.).
+func (n Note) Name() string {
+	return n.MusicNote().Name()
 }

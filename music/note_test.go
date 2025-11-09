@@ -64,6 +64,39 @@ func TestNote_Frequency(t *testing.T) {
 	}
 }
 
+func TestNote_Name(t *testing.T) {
+	type fields struct {
+		Octave int
+		Index  NoteIndex
+	}
+	tests := []struct {
+		want   string
+		fields fields
+	}{
+		{"Do0", fields{0, Label2Index("Do")}},
+		{"Ré1", fields{1, Label2Index("Ré")}},
+		{"Mi2", fields{2, Label2Index("Mi")}},
+		{"Fa2", fields{2, Label2Index("Fa")}},
+		{"Sol2", fields{2, Label2Index("Sol")}},
+		{"La3", fields{3, Label2Index("La")}},
+		{"Si3", fields{3, Label2Index("Si")}},
+	}
+
+	for _, tt := range tests {
+		name := tt.want
+		t.Run(name, func(t *testing.T) {
+			n := Note{
+				Octave: tt.fields.Octave,
+				Index:  tt.fields.Index,
+			}
+
+			if got := n.Name(); got != tt.want {
+				t.Errorf("Note.Name() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestNote_GammeChromatique(t *testing.T) {
 
 	type labelledNote struct {
@@ -127,5 +160,4 @@ func TestNote_Add(t *testing.T) {
 	if n.Octave != exp.Octave || n.Index != exp.Index {
 		t.Errorf("result is %v (should be %v)", n, exp)
 	}
-
 }
