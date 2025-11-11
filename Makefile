@@ -1,13 +1,15 @@
 all:
 
-cmds.%:
-	@make -C cmds/minimall $*
-	@make -C cmds/plotwave $*
-	@make -C cmds/wavechart $*
-	@make -C cmds/examples $*
-	@make -C cmds/letter2sound $*
-	@make -C cmds/calibration $*
-	@make -C cmds/playguitar $*
+demos.%:
+	@make -C demos/d01.minimall $*
+	@make -C demos/d02.waveplot $*
+	@make -C demos/d03.wavechart $*
+	@make -C demos/d04.wavesound $*
+	@make -C demos/d05.wavefft $*	
+	@make -C demos/d06.letter2sound $*
+	@make -C demos/d07.calibration $*
+	@make -C demos/d10.playguitar $*
+	@make -C demos/d11.guitarneck $*
 
 pkg.%:
 	@make -C wave $*
@@ -15,5 +17,5 @@ pkg.%:
 	@make -C music $*
 	@make -C guitar $*
 
-test: pkg.test cmds.test
-clean: pkg.clean cmds.clean
+test: pkg.test demos.test
+clean: pkg.clean demos.clean
