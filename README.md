@@ -24,11 +24,10 @@ to a physical sound wave, how to calculate the frequency of a guitar
 pluck, given the string number and the fret number.
 
 With this tutorial project, you can play with a set of executable
-programs (in the folder [cmds](cmds) as traditional in the go programing
-convention) that illustrates some basic elements of the music theory.
-Basic knowledge of what is a sound wave is required (at least its
-mathematical representation in terms of amplitude, frequency and
-timbre).
+programs (in the folder [demos](demos)) that illustrates some basic
+elements of the music theory. Basic knowledge of what is a sound wave is
+required (at least its mathematical representation in terms of
+amplitude, frequency and timbre).
 
 Even if it is a tutorial project, the packages may be used in other
 applications for other purposes (at least drawing wave forms, making
@@ -56,31 +55,31 @@ go mod tidy
 ## Quick start guide
 
 A good way to start with this project is to play with the executable
-programs in the [cmds](cmds) folder, in particular with:
+programs in the [demos](demos) folder, in particular with:
 
-* [cmds/examples](cmds/examples): play different sound examples based on
-  the usage of the packages wave, sound and music.
-* [cmds/playguitar](cmds/playguitar): play differents songs or musical
-  scales with a sound timbre emulating the guitar sound (use the
+* [demos/d04.wavesound](demos/d04.wavesound): play different sound
+  examples based on the usage of the packages wave, sound and music.
+* [demos/d10.playguitar](demos/d10.playguitar): play differents songs or
+  musical scales with a sound timbre emulating the guitar sound (use the
   KarplusStrong synthesizer). These examples illustrate the usage of the
   guitar package.
 
 For the examples:
 
 ```shell
-cd cmds/examples
+cd demos/d04.wavesound
 go build
-./examples -l     # to display all possible examples
-./examples -n D02 # to play the demo example D02 (vibrato)
+./d04.wavesound -l     # to display all possible examples
+./d04.wavesound -n D02 # to play the demo example D02 (vibrato)
 ```
 
 For the guitar player:
 
 ```shell
-cd cmds/playguitar
+cd demos/d10.playguitar
 go build
-./playguitar -l     # to display all possible examples
-./playguitar -n D03 # to play the demo example D03 (ACDC, Thunderstruck)
+./d10.playguitar -l     # to display all possible examples
+./d10.playguitar -n D03 # to play the demo example D03 (ACDC, Thunderstruck)
 ```
 
 Please, listen to the example D09 (Hurt from Johnny Cash), whose
@@ -130,7 +129,7 @@ value in a table of all possible frequencies.
 
 ## Technical features
 
-The executable program [cmds/plotwave](cmds/plotwave) shows how to plot
-the wave form using the matplotlib python library. It is in fact a
-technical demonstration of how to call go functions from a python context
-using C go.
+The executable program [demos/d02.waveplot](demos/d02.waveplot) shows
+how to plot a wave timeseries using the matplotlib python library. It is
+in fact a technical demonstration of how to call go functions from a
+python context using C go.
